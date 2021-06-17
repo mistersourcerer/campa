@@ -2,7 +2,7 @@ module Campa
   class Evaler
     def call(expression, env = {})
       case expression
-      when Numeric, TrueClass, FalseClass, NilClass
+      when Numeric, TrueClass, FalseClass, NilClass, String
         expression
       when Symbol
         resolve(expression, env)

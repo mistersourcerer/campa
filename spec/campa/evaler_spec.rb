@@ -34,6 +34,10 @@ RSpec.describe Campa::Evaler do
       it "returns nil when receiving it" do
         expect(evaler.call(nil)).to eq nil
       end
+
+      it "returns string when receiving it" do
+        expect(evaler.call("42")).to eq "42"
+      end
     end
 
     context "when resolving symbols" do
