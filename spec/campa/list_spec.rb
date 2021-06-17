@@ -45,4 +45,14 @@ RSpec.describe Campa::List do
       end
     end
   end
+
+  describe "#to_a" do
+    it "returns the list as an Array" do
+      expect(described_class.new(1, 2, 3, 4).to_a).to eq [1, 2, 3, 4]
+    end
+
+    it "returns an empty Array for empty lists" do
+      expect(empty.to_a).to eq []
+    end
+  end
 end

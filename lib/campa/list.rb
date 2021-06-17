@@ -1,5 +1,7 @@
 module Campa
   class List
+    include Enumerable
+
     EMPTY = new
 
     def initialize(*elements)
@@ -24,6 +26,13 @@ module Campa
       return EMPTY if first.next_node.nil?
 
       self.class.new.tap { |l| l.first = @first.next_node }
+    end
+
+    def each(&block)
+      return if self == EMPTY
+
+      block.call(head)
+      tail.each(&block) if tail != EMPTY
     end
 
     def ==(other)
