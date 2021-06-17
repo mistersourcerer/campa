@@ -5,6 +5,10 @@ RSpec.describe Campa::Evaler do
     Campa::Symbol.new(label)
   end
 
+  def list(*args)
+    Campa::List.new(*args)
+  end
+
   describe "#call", "expressions" do
     context "when evaluating 'primitives'" do
       it "returns the integer passed as param" do
@@ -45,8 +49,28 @@ RSpec.describe Campa::Evaler do
       end
     end
 
+    context "when evaling lists" do
+      it "invokes the bounded function in the environment" do
+        env = { symbol("fun") => -> { "yes" } }
+        invocation = list(symbol("fun"))
 
-        expect(evaler.call(Campa::Symbol.new("time"), env)).to eq 420
+        expect(evaler.call(invocation, env)).to eq "yes"
+      end
+
+      it "passes arguments to the bounded function" do
+        env = { symbol("fun") => ->(time) { time } }
+        invocation = list(symbol("fun"), 420)
+
+        expect(evaler.call(invocation, env)).to eq 420
+      end
+
+      it "passes multiple params to the function" do
+        env = { symbol("fun") => ->(*stuffs) { stuffs } }
+        invocation = list(symbol("fun"), 420, "there is", "things", :also)
+
+        expect(evaler.call(invocation, env)).to eq [
+          420, "there is", "things", :also
+        ]
       end
     end
   end
