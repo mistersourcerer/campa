@@ -1,6 +1,10 @@
 RSpec.describe Campa::Evaler do
   subject(:evaler) { described_class.new }
 
+  def symbol(label)
+    Campa::Symbol.new(label)
+  end
+
   describe "#call", "expressions" do
     context "when evaluating 'primitives'" do
       it "returns the integer passed as param" do
@@ -30,7 +34,17 @@ RSpec.describe Campa::Evaler do
 
     context "when resolving symbols" do
       it "returns the value associated with a symbol" do
-        env = { Campa::Symbol.new("time") => 420 }
+        env = { symbol("time") => 420 }
+
+        expect(evaler.call(symbol("time"), env)).to eq 420
+      end
+
+      it "raises if symbol is unbound" do
+        expect { evaler.call(symbol("oh_nos")) }
+          .to raise_error(Campa::ResolutionError)
+      end
+    end
+
 
         expect(evaler.call(Campa::Symbol.new("time"), env)).to eq 420
       end

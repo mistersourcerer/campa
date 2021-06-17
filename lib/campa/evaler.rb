@@ -12,6 +12,8 @@ module Campa
     private
 
     def resolve(symbol, env)
+      raise ResolutionError.new(symbol.label) if !env.include?(symbol)
+
       env[symbol]
     end
   end
