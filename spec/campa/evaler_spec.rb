@@ -27,5 +27,13 @@ RSpec.describe Campa::Evaler do
         expect(evaler.call(nil)).to eq nil
       end
     end
+
+    context "when resolving symbols" do
+      it "returns the value associated with a symbol" do
+        env = { Campa::Symbol.new("time") => 420 }
+
+        expect(evaler.call(Campa::Symbol.new("time"), env)).to eq 420
+      end
+    end
   end
 end
