@@ -48,14 +48,13 @@ module Campa
       return if elements.empty?
 
       elements.reduce(nil) do |previous, current|
+        new_node = Node.new(value: current)
         if previous.nil?
-          self.first = Node.new(value: current)
+          self.first = new_node
         else
-          previous.next_node = Node.new(value: current)
+          previous.next_node = new_node
         end
       end
-
-      self
     end
   end
 end
