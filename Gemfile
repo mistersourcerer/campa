@@ -12,3 +12,4 @@ gem "rubocop-rake", require: false
 gem "rubocop-rspec", require: false
 
 gem "pry-byebug"
+gem "simplecov", require: false
