@@ -20,7 +20,13 @@ module Campa
     end
 
     def push(new_env = {})
-      self.class.new(new_env).tap { |c| c.fallback = self }
+      # Context is explicit here
+      # (instead of self.class.new)
+      # because we can inherit a context,
+      # like the Lisp::Core does
+      # and then we want a normal context when pushing to it
+      # (and not a Lisp::Core).
+      Context.new(new_env).tap { |c| c.fallback = self }
     end
 
     protected
