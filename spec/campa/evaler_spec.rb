@@ -77,6 +77,17 @@ RSpec.describe Campa::Evaler do
         ]
       end
 
+      it "evaluates params before passing them down" do
+        env = {
+          symbol("fun") => ->(*stuffs) { stuffs },
+          symbol("num") => 420,
+          symbol("str") => "stuff"
+        }
+        invocation = list(symbol("fun"), symbol("num"), symbol("str"))
+
+        expect(evaler.call(invocation, env)).to eq [420, "stuff"]
+      end
+
       it "raises if symbol does not resolve to a function" do
         env = { symbol("nein") => "no #call" }
         invocation = list(symbol("nein"))
