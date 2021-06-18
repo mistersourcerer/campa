@@ -25,7 +25,14 @@ module Campa
     end
 
     def invoke(invocation, env)
-      resolve(invocation.head, env).call(*invocation.tail)
+      fn = resolve(invocation.head, env)
+      not_a_function_error(invocation.head) if !fn.respond_to?(:call)
+      fn.call(*invocation.tail)
+    end
+
+    def not_a_function_error(symbol)
+      raise(NotAFunctionError,
+            "The symbol: #{symbol.label} does not resolve to a function")
     end
   end
 end

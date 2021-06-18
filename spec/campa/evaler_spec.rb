@@ -76,6 +76,14 @@ RSpec.describe Campa::Evaler do
           420, "there is", "things", :also
         ]
       end
+
+      it "raises if symbol does not resolve to a function" do
+        env = { symbol("nein") => "no #call" }
+        invocation = list(symbol("nein"))
+
+        expect { evaler.call(invocation, env) }
+          .to raise_error Campa::NotAFunctionError
+      end
     end
   end
 end
