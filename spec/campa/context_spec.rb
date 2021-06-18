@@ -1,10 +1,6 @@
 RSpec.describe Campa::Context do
   subject(:context) { described_class.new }
 
-  def symbol(label)
-    Campa::Symbol.new(label)
-  end
-
   context "when accessing bindings" do
     it "behaves like a hash on writing and reading" do
       context[symbol("lol")] = 1

@@ -21,4 +21,12 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  def symbol(label)
+    Campa::Symbol.new(label)
+  end
+
+  def list(*args)
+    Campa::List.new(*args)
+  end
 end

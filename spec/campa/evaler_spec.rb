@@ -13,14 +13,6 @@ RSpec.describe Campa::Evaler do
     end
   end
 
-  def symbol(label)
-    Campa::Symbol.new(label)
-  end
-
-  def list(*args)
-    Campa::List.new(*args)
-  end
-
   describe "#call", "expressions" do
     context "when evaluating 'primitives'" do
       it "returns the integer passed as param" do
