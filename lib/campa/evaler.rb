@@ -27,6 +27,9 @@ module Campa
     def invoke(invocation, env)
       fn = resolve(invocation.head, env)
       not_a_function_error(invocation.head) if !fn.respond_to?(:call)
+      # TODO: create a new context for the invocation
+      #   we probably should always pass the context down to the functions
+      #   we should probably add a reference to the evaler in the ctx too
       args = args_for_fun(fn, invocation.tail.to_a, env)
       fn.call(*args)
     end
@@ -36,8 +39,8 @@ module Campa
             "The symbol: #{symbol.label} does not resolve to a function")
     end
 
-    def args_for_fun(fn, args, env)
-      if fn.respond_to?(:macro?) && fn.macro?
+    def args_for_fun(fun, args, env)
+      if fun.respond_to?(:macro?) && fun.macro?
         args.append(env)
       else
         args.map { |exp| call(exp, env) }

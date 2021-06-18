@@ -1,13 +1,15 @@
 RSpec.describe Campa::Evaler do
   subject(:evaler) { described_class.new }
 
-  class Macro
-    def call(something, env)
-      [something, env]
-    end
+  let(:macro) do
+    Class.new do
+      def call(something, env)
+        [something, env]
+      end
 
-    def macro?
-      true
+      def macro?
+        true
+      end
     end
   end
 
@@ -87,6 +89,7 @@ RSpec.describe Campa::Evaler do
         ]
       end
 
+      # rubocop: disable RSpec/ExampleLength
       it "evaluates params before passing them down" do
         env = {
           symbol("fun") => ->(*stuffs) { stuffs },
@@ -97,6 +100,7 @@ RSpec.describe Campa::Evaler do
 
         expect(evaler.call(invocation, env)).to eq [420, "stuff"]
       end
+      # rubocop: enable RSpec/ExampleLength
 
       it "raises if symbol does not resolve to a function" do
         env = { symbol("nein") => "no #call" }
@@ -106,13 +110,11 @@ RSpec.describe Campa::Evaler do
           .to raise_error Campa::NotAFunctionError
       end
 
-      context "when function is a macro" do
-        it "passes the args without evaling plus the env/context" do
-          env = { symbol("fun") => Macro.new }
-          invocation = list(symbol("fun"), 420)
+      it "passes the args without evaling plus the context/env to macros" do
+        env = { symbol("fun") => macro.new }
+        invocation = list(symbol("fun"), 420)
 
-          expect(evaler.call(invocation, env)).to eq [420, env]
-        end
+        expect(evaler.call(invocation, env)).to eq [420, env]
       end
     end
   end
