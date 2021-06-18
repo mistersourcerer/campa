@@ -15,7 +15,8 @@ module Campa
     end
 
     def include?(symbol)
-      env.include?(symbol) || fallback.include?(symbol)
+      env.include?(symbol) ||
+        (!fallback.nil? && fallback.include?(symbol))
     end
 
     def push(new_env = {})

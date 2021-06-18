@@ -25,6 +25,15 @@ RSpec.describe Campa::Context do
 
       expect(new_context[symbol("zig")]).to eq "zag"
     end
+
+    it "accepts an actual context to be pushed" do
+      context[symbol("zig")] = "NEIN!"
+      new_context = described_class.new(symbol("zig") => "zag")
+      another = context.push new_context
+
+      expect([another[symbol("zig")], context[symbol("zig")]])
+        .to eq ["zag", "NEIN!"]
+    end
   end
 
   describe "#[]" do

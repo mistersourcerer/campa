@@ -1,22 +1,30 @@
 module Campa
   class Evaler
     def call(expression, env = {})
+      context = self.context(env)
+
       case expression
       when Numeric, TrueClass, FalseClass, NilClass, String, ::Symbol
         expression
       when Symbol
-        resolve(expression, env)
+        resolve(expression, context)
       when List
-        invoke(expression, env)
+        invoke(expression, context)
       end
     end
 
     private
 
-    def resolve(symbol, env)
-      resolution_error(symbol) if !env.include?(symbol)
+    def context(env)
+      return env if env.is_a?(Context)
 
-      env[symbol]
+      Context.new(env)
+    end
+
+    def resolve(symbol, context)
+      resolution_error(symbol) if !context.include?(symbol)
+
+      context[symbol]
     end
 
     def resolution_error(symbol)
@@ -24,13 +32,13 @@ module Campa
             "Unable to resolve symbol: #{symbol.label} in this context")
     end
 
-    def invoke(invocation, env)
-      fn = resolve(invocation.head, env)
+    def invoke(invocation, context)
+      fn = resolve(invocation.head, context)
       not_a_function_error(invocation.head) if !fn.respond_to?(:call)
-      # TODO: create a new context for the invocation
-      #   we probably should always pass the context down to the functions
-      #   we should probably add a reference to the evaler in the ctx too
-      args = args_for_fun(fn, invocation.tail.to_a, env)
+
+      args =
+        args_for_fun(fn, invocation.tail.to_a, context)
+        .append(context.push(Context.new))
       fn.call(*args)
     end
 
@@ -39,11 +47,11 @@ module Campa
             "The symbol: #{symbol.label} does not resolve to a function")
     end
 
-    def args_for_fun(fun, args, env)
+    def args_for_fun(fun, args, context)
       if fun.respond_to?(:macro?) && fun.macro?
-        args.append(env)
+        args
       else
-        args.map { |exp| call(exp, env) }
+        args.map { |exp| call(exp, context) }
       end
     end
   end

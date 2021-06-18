@@ -67,14 +67,14 @@ RSpec.describe Campa::Evaler do
 
     context "when evaling lists" do
       it "invokes the bounded function in the environment" do
-        env = { symbol("fun") => -> { "yes" } }
+        env = { symbol("fun") => proc { "yes" } }
         invocation = list(symbol("fun"))
 
         expect(evaler.call(invocation, env)).to eq "yes"
       end
 
       it "passes arguments to the bounded function" do
-        env = { symbol("fun") => ->(time) { time } }
+        env = { symbol("fun") => proc { |time| time } }
         invocation = list(symbol("fun"), 420)
 
         expect(evaler.call(invocation, env)).to eq 420
@@ -84,8 +84,8 @@ RSpec.describe Campa::Evaler do
         env = { symbol("fun") => ->(*stuffs) { stuffs } }
         invocation = list(symbol("fun"), 420, "there is", "things", :also)
 
-        expect(evaler.call(invocation, env)).to eq [
-          420, "there is", "things", :also
+        expect(evaler.call(invocation, env)).to match_array [
+          420, "there is", "things", :also, Campa::Context
         ]
       end
 
@@ -98,7 +98,8 @@ RSpec.describe Campa::Evaler do
         }
         invocation = list(symbol("fun"), symbol("num"), symbol("str"))
 
-        expect(evaler.call(invocation, env)).to eq [420, "stuff"]
+        expect(evaler.call(invocation, env))
+          .to match_array [420, "stuff", Campa::Context]
       end
       # rubocop: enable RSpec/ExampleLength
 
@@ -114,7 +115,16 @@ RSpec.describe Campa::Evaler do
         env = { symbol("fun") => macro.new }
         invocation = list(symbol("fun"), 420)
 
-        expect(evaler.call(invocation, env)).to eq [420, env]
+        expect(evaler.call(invocation, env))
+          .to match_array [420, Campa::Context]
+      end
+
+      it "ensures the function has it's own context" do
+        env = { symbol("fun") => proc { |e| e[:nein] = false } }
+        invocation = list(symbol("fun"))
+        evaler.call(invocation, env)
+
+        expect(env[:nein]).to eq nil
       end
     end
   end
