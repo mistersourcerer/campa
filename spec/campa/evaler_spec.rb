@@ -1,6 +1,16 @@
 RSpec.describe Campa::Evaler do
   subject(:evaler) { described_class.new }
 
+  class Macro
+    def call(something, env)
+      [something, env]
+    end
+
+    def macro?
+      true
+    end
+  end
+
   def symbol(label)
     Campa::Symbol.new(label)
   end
@@ -94,6 +104,15 @@ RSpec.describe Campa::Evaler do
 
         expect { evaler.call(invocation, env) }
           .to raise_error Campa::NotAFunctionError
+      end
+
+      context "when function is a macro" do
+        it "passes the args without evaling plus the env/context" do
+          env = { symbol("fun") => Macro.new }
+          invocation = list(symbol("fun"), 420)
+
+          expect(evaler.call(invocation, env)).to eq [420, env]
+        end
       end
     end
   end
