@@ -24,6 +24,23 @@ module Campa
 
     private
 
+    def next_char
+      if @next_char.nil?
+        @current_char = @input.getc
+      else
+        @current_char = @next_char
+        @next_char = nil
+      end
+
+      @current_char
+    end
+
+    def peek
+      return @next_char if !@next_char.nil?
+
+      @next_char = @input.getc
+    end
+
     def to_io_like(input)
       # TODO: check if it is "castable" first,
       StringIO.new(input)
@@ -32,14 +49,22 @@ module Campa
     def eat_separators
       return if @input.eof?
 
-      @current_char = @input.getc
-      @current_char = @input.getc while separator?
+      next_char
+      next_char while separator?
     end
 
     def read
       case
       when @current_char == "\""
         read_string
+      when digit?
+        read_number
+      when @current_char == "-"
+        if digit?(peek)
+          read_number
+        else
+          #read_symbol
+        end
       end
     end
 
@@ -47,19 +72,48 @@ module Campa
       return if @input.eof?
 
       string = ""
-      while !@input.eof? && (char = @input.getc) != "\""
-        string << char
+      while !@input.eof? && next_char != "\""
+        string << @current_char
       end
-      raise Error::MissingDelimiter, "\"" if char != "\""
+      raise Error::MissingDelimiter, "\"" if @current_char != "\""
 
       # eat the close quotation mark
-      @current_char = @input.getc
+      next_char
 
       string
     end
 
+    def read_number
+      number = ""
+      cast = ->(str) { Integer(str) }
+
+      while !@input.eof? && !separator?
+        number << @current_char
+        cast = -> (str) { Float(str) } if @current_char == "."
+        next_char
+      end
+
+      # If number was the last thing in the input
+      #   we hit the #eof? before having the chance
+      #   to concatenate the last digit of it
+      number << @current_char if digit?
+
+      begin
+        cast.call(number)
+      rescue ArgumentError
+        raise Error::InvalidNumber, number
+      end
+    end
+
     def separator?
       @current_char == "\s" || @current_char == ","
+    end
+
+    def digit?(char = nil)
+      char ||= @current_char
+      # TODO: should we force the encoding of source files?
+      #   (since codepoints will be different depending on encoding).
+      !char.nil? && (char.ord >= 48 && char.ord <= 57)
     end
   end
 end

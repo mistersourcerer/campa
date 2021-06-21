@@ -23,15 +23,31 @@ RSpec.describe Campa::Reader do
       end
     end
 
+    context "when reading numbers" do
+      it "recognizes integers" do
+        expect(new_reader("4").next).to eq 4
+      end
+
+      it "recognizes floats" do
+        expect(new_reader("4.2").next).to eq 4.2
+      end
+
+      it "recongnizes negatives" do
+        expect(new_reader("-4.2").next).to eq -4.2
+      end
+
+      it "raises when number is invalid" do
+        expect { new_reader("4and20").next }.to raise_error(
+          Campa::Error::InvalidNumber,
+          "Invalid number: 4and20"
+        )
+      end
+    end
+
     context "when reading primitives" do
       it "reads symbols" do
         pending
         expect(new_reader("lol").next).to eq symbol("lol")
-      end
-
-      it "reads numbers" do
-        pending
-        expect(new_reader("4").next).to eq 4
       end
     end
 
