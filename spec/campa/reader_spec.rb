@@ -17,7 +17,7 @@ RSpec.describe Campa::Reader do
 
       it "raises if a string is not closed" do
         expect { new_reader("\"lol").next }.to raise_error(
-          Campa::MissingDelimiterError,
+          Campa::Error::MissingDelimiter,
           "\" was expected but none was found"
         )
       end

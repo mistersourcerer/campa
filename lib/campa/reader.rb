@@ -50,7 +50,7 @@ module Campa
       while !@input.eof? && (char = @input.getc) != "\""
         string << char
       end
-      raise MissingDelimiterError, "\"" if char != "\""
+      raise Error::MissingDelimiter, "\"" if char != "\""
 
       # eat the close quotation mark
       @current_char = @input.getc

@@ -53,7 +53,7 @@ RSpec.describe Campa::Evaler do
 
       it "raises if symbol is unbound" do
         expect { evaler.call(symbol("oh_nos")) }
-          .to raise_error(Campa::ResolutionError)
+          .to raise_error(Campa::Error::Resolution)
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.describe Campa::Evaler do
         invocation = list(symbol("nein"))
 
         expect { evaler.call(invocation, env) }
-          .to raise_error Campa::NotAFunctionError
+          .to raise_error Campa::Error::NotAFunction
       end
 
       it "passes the args without evaling plus the context/env to macros" do

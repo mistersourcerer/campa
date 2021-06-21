@@ -22,29 +22,19 @@ module Campa
     end
 
     def resolve(symbol, context)
-      resolution_error(symbol) if !context.include?(symbol)
+      raise Error::Resolution, symbol.label if !context.include?(symbol)
 
       context[symbol]
     end
 
-    def resolution_error(symbol)
-      raise(ResolutionError,
-            "Unable to resolve symbol: #{symbol.label} in this context")
-    end
-
     def invoke(invocation, context)
       fn = resolve(invocation.head, context)
-      not_a_function_error(invocation.head) if !fn.respond_to?(:call)
+      raise Error::NotAFunction, invocation.head if !fn.respond_to?(:call)
 
       args =
         args_for_fun(fn, invocation.tail.to_a, context)
         .append(context.push(Context.new))
       fn.call(*args)
-    end
-
-    def not_a_function_error(symbol)
-      raise(NotAFunctionError,
-            "The symbol: #{symbol.label} does not resolve to a function")
     end
 
     def args_for_fun(fun, args, context)
