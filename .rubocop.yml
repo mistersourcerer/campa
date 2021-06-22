@@ -29,3 +29,6 @@ Metrics/BlockLength:
 
 Style/NegatedIf:
   Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
