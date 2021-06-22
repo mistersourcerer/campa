@@ -63,8 +63,10 @@ module Campa
         if digit?(peek)
           read_number
         else
-          #read_symbol
+          read_symbol
         end
+      else
+        read_symbol
       end
     end
 
@@ -89,7 +91,7 @@ module Campa
 
       while !@input.eof? && !separator?
         number << @current_char
-        cast = -> (str) { Float(str) } if @current_char == "."
+        cast = ->(str) { Float(str) } if @current_char == "."
         next_char
       end
 
@@ -103,6 +105,19 @@ module Campa
       rescue ArgumentError
         raise Error::InvalidNumber, number
       end
+    end
+
+    def read_symbol
+      label = @current_char
+
+      while !@input.eof?
+        next_char
+        break if separator?
+        label << @current_char
+      end
+
+      # TODO: validate symbol (raise if invalid chars are present)
+      Symbol.new(label)
     end
 
     def separator?

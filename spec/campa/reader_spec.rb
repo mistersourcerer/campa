@@ -33,7 +33,7 @@ RSpec.describe Campa::Reader do
       end
 
       it "recongnizes negatives" do
-        expect(new_reader("-4.2").next).to eq -4.2
+        expect(new_reader("-4.2").next).to eq(-4.2)
       end
 
       it "raises when number is invalid" do
@@ -44,11 +44,21 @@ RSpec.describe Campa::Reader do
       end
     end
 
-    context "when reading primitives" do
-      it "reads symbols" do
-        pending
+    context "when reading symbols" do
+      it "returns the symbol object" do
         expect(new_reader("lol").next).to eq symbol("lol")
       end
+
+      it "knows when a symbol declaration finishes" do
+        reader = new_reader("lol b-b-q")
+        expect([reader.next, reader.next])
+          .to eq [symbol("lol"), symbol("b-b-q")]
+      end
+
+      it "does not go crazy when symbol starts with hiphen" do
+        expect(new_reader("-bbq").next).to eq symbol("-bbq")
+      end
+    end
     end
 
     it "reads invocations into lists"
