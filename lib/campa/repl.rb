@@ -22,9 +22,16 @@ module Campa
     private
 
     def format(result)
-      return "\"#{result}\"" if result.is_a?(String)
-
-      result
+      case result
+      when String
+        "\"#{result}\""
+      when Symbol
+        result.label
+      when List
+        "(#{result.map { |el| format(el) }.join(" ")})"
+      else
+        result
+      end
     end
   end
 end

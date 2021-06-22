@@ -120,7 +120,7 @@ module Campa
       next_char
 
       expression = self.next
-      List.new(symbol("quote"), expression)
+      List.new(Symbol.new("quote"), expression)
     end
 
     def read_list
