@@ -88,6 +88,22 @@ RSpec.describe Campa::Reader do
       end
     end
 
-    it "understands the ' for quoting"
+    context "when quoting" do
+      it "understands the ' for quoting" do
+        expect(new_reader("'q").next)
+          .to eq list(symbol("quote"), symbol("q"))
+      end
+
+      it "does not freak out when mixed with multiple expressions" do
+        reader = new_reader("'q (quote z) 'q 1")
+        expect([reader.next, reader.next, reader.next, reader.next])
+          .to eq [
+            list(symbol("quote"), symbol("q")),
+            list(symbol("quote"), symbol("z")),
+            list(symbol("quote"), symbol("q")),
+            1
+          ]
+      end
+    end
   end
 end

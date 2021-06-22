@@ -2,11 +2,6 @@ require "stringio"
 
 module Campa
   class Reader
-    SEPARATOR = /\A\s|,/
-    STRING = /\A"/
-    DIGIT = /\A\d/
-    NUMERIC = /\A[\d_]/
-
     def initialize(input)
       @input =
         if input.respond_to?(:getc) && intput.respond_to?(:eof?)
@@ -65,6 +60,8 @@ module Campa
         else
           read_symbol
         end
+      when @current_char == "'"
+        read_quotation
       when @current_char == "("
         read_list
       else
@@ -109,17 +106,12 @@ module Campa
       end
     end
 
-    def read_symbol
-      label = @current_char
+    def read_quotation
+      # eats the ' char
+      next_char
 
-      while !@input.eof?
-        next_char
-        break if separator? || delimiter?
-        label << @current_char
-      end
-
-      # TODO: validate symbol (raise if invalid chars are present)
-      Symbol.new(label)
+      expression = self.next
+      List.new(symbol("quote"), expression)
     end
 
     def read_list
@@ -138,6 +130,19 @@ module Campa
       next_char
 
       List.new(*elements)
+    end
+
+    def read_symbol
+      label = @current_char
+
+      while !@input.eof?
+        next_char
+        break if separator? || delimiter?
+        label << @current_char
+      end
+
+      # TODO: validate symbol (raise if invalid chars are present)
+      Symbol.new(label)
     end
 
     def separator?
