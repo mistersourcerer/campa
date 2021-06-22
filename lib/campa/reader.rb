@@ -6,7 +6,7 @@ module Campa
     # rubocop: enable Metrics/ClassLength
     def initialize(input)
       @input =
-        if input.respond_to?(:getc) && intput.respond_to?(:eof?)
+        if input.respond_to?(:getc) && input.respond_to?(:eof?)
           input
         else
           to_io_like(input)
@@ -17,10 +17,17 @@ module Campa
 
     def next
       eat_separators
+      return if @input.eof? && separator?
+
       read
     end
 
     private
+
+    def to_io_like(input)
+      # TODO: check if it is "castable" first,
+      StringIO.new(input)
+    end
 
     def next_char
       if @next_char.nil?
@@ -37,11 +44,6 @@ module Campa
       return @next_char if !@next_char.nil?
 
       @next_char = @input.getc
-    end
-
-    def to_io_like(input)
-      # TODO: check if it is "castable" first,
-      StringIO.new(input)
     end
 
     def eat_separators
@@ -154,7 +156,7 @@ module Campa
     end
 
     def separator?
-      @current_char == "\s" || @current_char == ","
+      @current_char == "\s" || @current_char == "," || @current_char == "\n"
     end
 
     def delimiter?

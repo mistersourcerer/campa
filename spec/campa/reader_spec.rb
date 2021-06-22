@@ -99,6 +99,7 @@ RSpec.describe Campa::Reader do
       # rubocop: disable RSpec/ExampleLength
       it "knows how to read multiple quotes" do
         reader = new_reader(" 'q 'z ")
+
         expect([reader.next, reader.next])
           .to eq [
             list(symbol("quote"), symbol("q")),
@@ -106,6 +107,24 @@ RSpec.describe Campa::Reader do
           ]
       end
       # rubocop: enable RSpec/ExampleLength
+    end
+
+    context "when handling new lines" do
+      it "handles it as a normal separator" do
+        expect(new_reader("1\n").next).to eq 1
+      end
+
+      it "understands it can separate multiple expressions" do
+        reader = new_reader("1\n \"two\" \n (three 4)\n ")
+
+        expect([reader.next, reader.next, reader.next])
+          .to eq [1, "two", list(symbol("three"), 4)]
+      end
+
+      it "ensures separators at the end of the input are ignored" do
+        reader = new_reader("1\n")
+        expect([reader.next, reader.next]).to eq [1, nil]
+      end
     end
   end
 end
