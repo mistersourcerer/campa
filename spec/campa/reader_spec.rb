@@ -76,6 +76,7 @@ RSpec.describe Campa::Reader do
           .to eq list(symbol("bbq"), 1, "two", 3.0)
       end
 
+      # rubocop: disable RSpec/ExampleLength
       it "knows how to read multiple lists" do
         reader = new_reader("(bbq 1) (time 4.20) (next \"action\" )")
 
@@ -86,6 +87,7 @@ RSpec.describe Campa::Reader do
             list(symbol("next"), "action")
           ]
       end
+      # rubocop: enable RSpec/ExampleLength
     end
 
     context "when quoting" do
@@ -94,16 +96,16 @@ RSpec.describe Campa::Reader do
           .to eq list(symbol("quote"), symbol("q"))
       end
 
-      it "does not freak out when mixed with multiple expressions" do
-        reader = new_reader("'q (quote z) 'q 1")
-        expect([reader.next, reader.next, reader.next, reader.next])
+      # rubocop: disable RSpec/ExampleLength
+      it "knows how to read multiple quotes" do
+        reader = new_reader(" 'q 'z ")
+        expect([reader.next, reader.next])
           .to eq [
             list(symbol("quote"), symbol("q")),
             list(symbol("quote"), symbol("z")),
-            list(symbol("quote"), symbol("q")),
-            1
           ]
       end
+      # rubocop: enable RSpec/ExampleLength
     end
   end
 end

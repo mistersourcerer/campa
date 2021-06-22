@@ -1,7 +1,9 @@
 require "stringio"
 
 module Campa
+  # rubocop: disable Metrics/ClassLength
   class Reader
+    # rubocop: enable Metrics/ClassLength
     def initialize(input)
       @input =
         if input.respond_to?(:getc) && intput.respond_to?(:eof?)
@@ -48,6 +50,7 @@ module Campa
       next_char while separator?
     end
 
+    # rubocop: disable Metrics/MethodLength, Metrics/PerceivedComplexity, Style/EmptyCaseCondition
     def read
       case
       when @current_char == "\""
@@ -68,6 +71,7 @@ module Campa
         read_symbol
       end
     end
+    # rubocop: enable Metrics/MethodLength, Metrics/PerceivedComplexity, Style/EmptyCaseCondition
 
     def read_string
       return if @input.eof?
@@ -92,18 +96,21 @@ module Campa
       number = @current_char
       cast = ->(str) { Integer(str) }
 
-      while !@input.eof?
+      until @input.eof?
         cast = ->(str) { Float(str) } if @current_char == "."
         next_char
         break if separator? || delimiter?
+
         number << @current_char
       end
 
-      begin
-        cast.call(number)
-      rescue ArgumentError
-        raise Error::InvalidNumber, number
-      end
+      safe_cast(number, cast)
+    end
+
+    def safe_cast(number, cast)
+      cast.call(number)
+    rescue ArgumentError
+      raise Error::InvalidNumber, number
     end
 
     def read_quotation
@@ -135,9 +142,10 @@ module Campa
     def read_symbol
       label = @current_char
 
-      while !@input.eof?
+      until @input.eof?
         next_char
         break if separator? || delimiter?
+
         label << @current_char
       end
 
