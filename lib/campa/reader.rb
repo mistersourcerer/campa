@@ -8,13 +8,14 @@ module Campa
     NUMERIC = /\A[\d_]/
 
     def initialize(input)
-      @current_char = nil
       @input =
         if input.respond_to?(:getc) && intput.respond_to?(:eof?)
           input
         else
           to_io_like(input)
         end
+
+      next_char
     end
 
     def next
@@ -49,7 +50,6 @@ module Campa
     def eat_separators
       return if @input.eof?
 
-      next_char
       next_char while separator?
     end
 
@@ -65,6 +65,8 @@ module Campa
         else
           read_symbol
         end
+      when @current_char == "("
+        read_list
       else
         read_symbol
       end
@@ -74,31 +76,31 @@ module Campa
       return if @input.eof?
 
       string = ""
-      while !@input.eof? && next_char != "\""
+      # eats the opening "
+      next_char
+
+      while !@input.eof? && @current_char != "\""
         string << @current_char
+        next_char
       end
       raise Error::MissingDelimiter, "\"" if @current_char != "\""
 
-      # eat the close quotation mark
+      # eats the closing "
       next_char
 
       string
     end
 
     def read_number
-      number = ""
+      number = @current_char
       cast = ->(str) { Integer(str) }
 
-      while !@input.eof? && !separator?
-        number << @current_char
+      while !@input.eof?
         cast = ->(str) { Float(str) } if @current_char == "."
         next_char
+        break if separator? || delimiter?
+        number << @current_char
       end
-
-      # If number was the last thing in the input
-      #   we hit the #eof? before having the chance
-      #   to concatenate the last digit of it
-      number << @current_char if digit?
 
       begin
         cast.call(number)
@@ -112,7 +114,7 @@ module Campa
 
       while !@input.eof?
         next_char
-        break if separator?
+        break if separator? || delimiter?
         label << @current_char
       end
 
@@ -120,8 +122,30 @@ module Campa
       Symbol.new(label)
     end
 
+    def read_list
+      # eats the opening (
+      next_char
+
+      elements = []
+      while !@input.eof? && @current_char != ")"
+        token = self.next
+        elements << token
+        eat_separators if separator?
+      end
+      raise Error::MissingDelimiter, ")" if @current_char != ")"
+
+      # eats the closing )
+      next_char
+
+      List.new(*elements)
+    end
+
     def separator?
       @current_char == "\s" || @current_char == ","
+    end
+
+    def delimiter?
+      @current_char == ")"
     end
 
     def digit?(char = nil)

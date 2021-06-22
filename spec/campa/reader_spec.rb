@@ -59,9 +59,35 @@ RSpec.describe Campa::Reader do
         expect(new_reader("-bbq").next).to eq symbol("-bbq")
       end
     end
+
+    context "when reading lists" do
+      it "reads invocations into lists" do
+        expect(new_reader("(bbq \"yas\")").next)
+          .to eq list(symbol("bbq"), "yas")
+      end
+
+      it "reads invocations into lists with multiple args" do
+        expect(new_reader("(bbq 1 \"two\" 3.0)").next)
+          .to eq list(symbol("bbq"), 1, "two", 3.0)
+      end
+
+      it "knows awfully formatted lists" do
+        expect(new_reader("(  bbq 1 \"two\" 3.0 )").next)
+          .to eq list(symbol("bbq"), 1, "two", 3.0)
+      end
+
+      it "knows how to read multiple lists" do
+        reader = new_reader("(bbq 1) (time 4.20) (next \"action\" )")
+
+        expect([reader.next, reader.next, reader.next])
+          .to eq [
+            list(symbol("bbq"), 1),
+            list(symbol("time"), 4.20),
+            list(symbol("next"), "action")
+          ]
+      end
     end
 
-    it "reads invocations into lists"
     it "understands the ' for quoting"
   end
 end
