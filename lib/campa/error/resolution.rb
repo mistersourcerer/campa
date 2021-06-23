@@ -1,6 +1,6 @@
 module Campa
   module Error
-    class Resolution < StandardError
+    class Resolution < ExecutionError
       def initialize(label)
         super "Unable to resolve symbol: #{label} in this context"
       end

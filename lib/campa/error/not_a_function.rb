@@ -1,6 +1,6 @@
 module Campa
   module Error
-    class NotAFunction < StandardError
+    class NotAFunction < ExecutionError
       def initialize(label)
         super "The symbol: #{label} does not resolve to a function"
       end
