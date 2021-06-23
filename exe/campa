@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require "campa"
+
+Campa::Repl
+  .new(Campa::Evaler.new, Campa::Lisp::Core.new)
+  .run($stdin, $stdout)
