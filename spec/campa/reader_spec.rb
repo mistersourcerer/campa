@@ -60,6 +60,29 @@ RSpec.describe Campa::Reader do
       end
     end
 
+    context "when reading bools" do
+      it "read 'true' and 'false' as booleans" do
+        reader = new_reader("true false")
+
+        expect([reader.next, reader.next]).to eq [true, false]
+      end
+
+      it "does not break logic for symbols starting with true or false" do
+        reader = new_reader("truethy falsey")
+
+        expect([reader.next, reader.next])
+          .to eq [symbol("truethy"), symbol("falsey")]
+      end
+
+      it "does not break te overall multiple expressions logic" do
+        reader = new_reader("true false true '(a b)")
+        3.times { reader.next }
+
+        expect(reader.next)
+          .to eq list(symbol("quote"), list(symbol("a"), symbol("b")))
+      end
+    end
+
     context "when reading lists" do
       it "reads invocations into lists" do
         expect(new_reader("(bbq \"yas\")").next)

@@ -52,7 +52,8 @@ module Campa
       next_char while separator?
     end
 
-    # rubocop: disable Metrics/MethodLength, Metrics/PerceivedComplexity, Style/EmptyCaseCondition
+    # rubocop: disable Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop: disable Style/EmptyCaseCondition, Metrics/AbcSize, Metrics/CyclomaticComplexity
     def read
       case
       when @current_char == "\""
@@ -60,20 +61,19 @@ module Campa
       when digit?
         read_number
       when @current_char == "-"
-        if digit?(peek)
-          read_number
-        else
-          read_symbol
-        end
+        digit?(peek) ? read_number : read_symbol
       when @current_char == "'"
         read_quotation
       when @current_char == "("
         read_list
+      when @current_char == "t" || @current_char == "f"
+        boolean? ? read_boolean : read_symbol
       else
         read_symbol
       end
     end
-    # rubocop: enable Metrics/MethodLength, Metrics/PerceivedComplexity, Style/EmptyCaseCondition
+    # rubocop: enable Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop: enable Style/EmptyCaseCondition, Metrics/AbcSize, Metrics/CyclomaticComplexity
 
     def read_string
       return if @input.eof?
@@ -141,8 +141,16 @@ module Campa
       List.new(*elements)
     end
 
+    def read_boolean
+      boolean_value = @current_token
+      @current_token = nil
+      next_char
+      boolean_value == "true"
+    end
+
     def read_symbol
-      label = @current_char
+      label = @current_token || @current_char
+      @current_token = nil
 
       until @input.eof?
         next_char
@@ -168,6 +176,14 @@ module Campa
       # TODO: should we force the encoding of source files?
       #   (since codepoints will be different depending on encoding).
       !char.nil? && (char.ord >= 48 && char.ord <= 57)
+    end
+
+    def boolean?
+      return false if @current_char != "t" && @current_char != "f"
+
+      @current_token = @current_char
+      @current_token << next_char until @input.eof? || peek == " "
+      @current_token == "true" || @current_token == "false"
     end
   end
 end
