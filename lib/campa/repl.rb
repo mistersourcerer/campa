@@ -25,6 +25,8 @@ module Campa
 
         output.print "=> "
       end
+    rescue Interrupt
+      output.puts "see you soon"
     end
     # rubocop: enable Metrics/MethodLength
 

@@ -66,5 +66,23 @@ RSpec.describe Campa::Repl do
       end
       # rubocop: enable RSpec/ExampleLength
     end
+
+    # rubocop: disable RSpec/MultipleMemoizedHelpers, RSpec/VerifiedDoubles
+    context "when handling interruption" do
+      subject(:repl) do
+        described_class.new(evaler, lisp, reader: reader_class)
+      end
+
+      let(:broken_reader) { double }
+      let(:reader_class) { double(new: broken_reader) }
+
+      it "shows a polite good bye message" do
+        allow(broken_reader).to receive(:next).and_raise(Interrupt)
+        repl.run(input, output)
+
+        expect(output.string).to eq "=> see you soon\n"
+      end
+    end
+    # rubocop: enable RSpec/MultipleMemoizedHelpers, RSpec/VerifiedDoubles
   end
 end
