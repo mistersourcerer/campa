@@ -41,6 +41,7 @@ module Campa
         )
     end
 
+    # rubocop: disable Metrics/MethodLength
     def format(result)
       case result
       when String
@@ -50,10 +51,11 @@ module Campa
       when List
         "(#{result.map { |el| format(el) }.join(" ")})"
       when TrueClass, FalseClass
-        "#{result == true}"
+        (result == true).to_s
       else
         result
       end
     end
+    # rubocop: enable Metrics/MethodLength
   end
 end
