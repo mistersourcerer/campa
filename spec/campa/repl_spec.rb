@@ -41,9 +41,9 @@ RSpec.describe Campa::Repl do
 
     context "when outputing lists" do
       it "puts the same list" do
-        repl.run(input("'(1 2 3)\n"), output)
+        repl.run(input("'(1 2 3 true false)\n"), output)
 
-        expect(output.string.split("=> ")[1]).to eq "(1 2 3)\n"
+        expect(output.string.split("=> ")[1]).to eq "(1 2 3 true false)\n"
       end
 
       it "formats the list elements too" do

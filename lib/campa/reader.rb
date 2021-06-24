@@ -164,7 +164,7 @@ module Campa
     end
 
     def separator?
-      @current_char == "\s" || @current_char == "," || @current_char == "\n"
+      ["\s", ",", "\n"].include? @current_char
     end
 
     def delimiter?
@@ -182,8 +182,8 @@ module Campa
       return false if @current_char != "t" && @current_char != "f"
 
       @current_token = @current_char
-      @current_token << next_char until @input.eof? || peek == " "
-      @current_token == "true" || @current_token == "false"
+      @current_token << next_char until @input.eof? || peek == " " || peek == ")"
+      %w[true false].include? @current_token
     end
   end
 end
