@@ -118,6 +118,10 @@ RSpec.describe Campa::Evaler do
 
         expect(env[:nein]).to eq nil
       end
+
+      it "evaluates empty lists to themselves" do
+        expect(evaler.call(list)).to eq list
+      end
     end
   end
 end

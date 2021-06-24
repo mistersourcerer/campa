@@ -49,6 +49,8 @@ module Campa
         result.label
       when List
         "(#{result.map { |el| format(el) }.join(" ")})"
+      when TrueClass, FalseClass
+        "#{result == true}"
       else
         result
       end

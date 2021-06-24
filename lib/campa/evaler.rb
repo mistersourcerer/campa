@@ -9,6 +9,8 @@ module Campa
       when Symbol
         resolve(expression, context)
       when List
+        return List::EMPTY if expression == List::EMPTY
+
         invoke(expression, context)
       end
     end
