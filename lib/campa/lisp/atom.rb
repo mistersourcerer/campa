@@ -7,8 +7,6 @@ module Campa
           true
         when List
           expression == List::EMPTY
-        else
-          false
         end
       end
     end
