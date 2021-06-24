@@ -3,7 +3,8 @@ module Campa
     class Core < Context
       def initialize
         super({
-          sym("quote") => Quote.new
+          sym("quote") => Quote.new,
+          sym("atom") => Atom.new,
         })
       end
 
