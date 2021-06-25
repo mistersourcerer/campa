@@ -1,21 +1,8 @@
-RSpec.describe Campa::Lisp::Core do
-  subject(:lisp) { described_class.new }
-
+RSpec.describe Campa::Lisp::Atom do
+  let(:lisp) { Campa::Lisp::Core.new }
   let(:evaler) { Campa::Evaler.new }
 
-  def invoke(label, *params)
-    list(symbol(label), *params)
-  end
-
-  describe "#quote" do
-    it "returns the expression without evaluating it" do
-      ivk = invoke("quote", invoke("+", 1, 2))
-
-      expect(evaler.call(ivk, lisp)).to eq list(symbol("+"), 1, 2)
-    end
-  end
-
-  describe "#atom" do
+  describe "(atom ...)" do
     it "returns true for symbols" do
       ivk = invoke("atom", invoke("quote", symbol("a")))
 

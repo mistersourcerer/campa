@@ -29,4 +29,8 @@ RSpec.configure do |config|
   def list(*args)
     Campa::List.new(*args)
   end
+
+  def invoke(label, *params)
+    list(symbol(label), *params)
+  end
 end

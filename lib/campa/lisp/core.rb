@@ -5,6 +5,7 @@ module Campa
         super({
           sym("quote") => Quote.new,
           sym("atom") => Atom.new,
+          sym("eq") => Eq.new,
         })
       end
 
