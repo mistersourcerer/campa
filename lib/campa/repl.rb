@@ -5,6 +5,7 @@ module Campa
       @evaler = evaler
       @context = context
       @environment = Context.new(@context)
+      @printer = Printer.new
     end
 
     # rubocop: disable Metrics/MethodLength
@@ -41,21 +42,8 @@ module Campa
         )
     end
 
-    # rubocop: disable Metrics/MethodLength
     def format(result)
-      case result
-      when String
-        "\"#{result}\""
-      when Symbol
-        result.label
-      when List
-        "(#{result.map { |el| format(el) }.join(" ")})"
-      when TrueClass, FalseClass
-        (result == true).to_s
-      else
-        result
-      end
+      @printer.call(result)
     end
-    # rubocop: enable Metrics/MethodLength
   end
 end
