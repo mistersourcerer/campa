@@ -33,9 +33,7 @@ module Campa
       fn = resolve(invocation.head, context)
       raise Error::NotAFunction, invocation.head if !fn.respond_to?(:call)
 
-      args =
-        args_for_fun(fn, invocation.tail.to_a, context)
-        .append(context.push(Context.new))
+      args = args_for_fun(fn, invocation.tail.to_a, context)
       fn.call(*args)
     end
 
@@ -45,6 +43,8 @@ module Campa
       else
         args.map { |exp| call(exp, context) }
       end
+
+      # maybe check the arity here? before returning?
     end
   end
 end

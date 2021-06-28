@@ -5,7 +5,7 @@ module Campa
         true
       end
 
-      def call(expression, _)
+      def call(expression)
         expression
       end
     end

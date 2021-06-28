@@ -8,11 +8,11 @@ RSpec.describe Campa::Lisp::Quote do
 
   describe "#call" do
     it "returns the parameters without evaluating it" do
-      expect(quote.call(symbol("a"), {})).to eq symbol("a")
+      expect(quote.call(symbol("a"))).to eq symbol("a")
     end
 
     it "works with lists also" do
-      expect(quote.call(list(symbol("a"), "b"), {}))
+      expect(quote.call(list(symbol("a"), "b")))
         .to eq list(symbol("a"), "b")
     end
   end

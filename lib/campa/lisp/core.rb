@@ -6,6 +6,7 @@ module Campa
           sym("quote") => Quote.new,
           sym("atom") => Atom.new,
           sym("eq") => Eq.new,
+          sym("car") => Car.new,
         })
       end
 

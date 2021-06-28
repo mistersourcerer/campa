@@ -3,8 +3,8 @@ RSpec.describe Campa::Evaler do
 
   let(:macro) do
     Class.new do
-      def call(something, env)
-        [something, env]
+      def call(something)
+        something
       end
 
       def macro?
@@ -77,7 +77,7 @@ RSpec.describe Campa::Evaler do
         invocation = list(symbol("fun"), 420, "there is", "things", :also)
 
         expect(evaler.call(invocation, env)).to match_array [
-          420, "there is", "things", :also, Campa::Context
+          420, "there is", "things", :also
         ]
       end
 
@@ -91,7 +91,7 @@ RSpec.describe Campa::Evaler do
         invocation = list(symbol("fun"), symbol("num"), symbol("str"))
 
         expect(evaler.call(invocation, env))
-          .to match_array [420, "stuff", Campa::Context]
+          .to match_array [420, "stuff"]
       end
       # rubocop: enable RSpec/ExampleLength
 
@@ -107,20 +107,14 @@ RSpec.describe Campa::Evaler do
         env = { symbol("fun") => macro.new }
         invocation = list(symbol("fun"), 420)
 
-        expect(evaler.call(invocation, env))
-          .to match_array [420, Campa::Context]
-      end
-
-      it "ensures the function has it's own context" do
-        env = { symbol("fun") => proc { |e| e[:nein] = false } }
-        invocation = list(symbol("fun"))
-        evaler.call(invocation, env)
-
-        expect(env[:nein]).to eq nil
+        expect(evaler.call(invocation, env)).to eq 420
       end
 
       it "evaluates empty lists to themselves" do
         expect(evaler.call(list)).to eq list
+      end
+
+      xit "ensures the function has it's own context" do
       end
     end
   end

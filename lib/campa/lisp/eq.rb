@@ -5,13 +5,8 @@ module Campa
         @evaler = Evaler.new
       end
 
-      def call(*args)
-        case args
-        in expr_a, expr_b, _, *_
-          expr_a == expr_b
-        else
-          raise "args wrongs!"
-        end
+      def call(expr_a, expr_b)
+        expr_a == expr_b
       end
     end
   end
