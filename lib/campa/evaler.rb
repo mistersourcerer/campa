@@ -34,7 +34,11 @@ module Campa
       raise Error::NotAFunction, invocation.head if !fn.respond_to?(:call)
 
       args = args_for_fun(fn, invocation.tail.to_a, context)
-      fn.call(*args)
+      if with_env?(fn)
+        fn.call(*args, env: context)
+      else
+        fn.call(*args)
+      end
     end
 
     def args_for_fun(fun, args, context)
@@ -43,8 +47,20 @@ module Campa
       else
         args.map { |exp| call(exp, context) }
       end
+    end
 
-      # maybe check the arity here? before returning?
+    def with_env?(fun)
+      parameters =
+        if fun.is_a?(Proc)
+          fun.parameters
+        else
+          fun.method(:call).parameters
+        end
+
+      !parameters
+        .filter { |param| param[0] == :keyreq }
+        .find { |param| param[1] == :env }
+        .nil?
     end
   end
 end

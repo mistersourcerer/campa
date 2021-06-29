@@ -103,12 +103,25 @@ RSpec.describe Campa::Evaler do
           .to raise_error Campa::Error::NotAFunction
       end
 
-      it "passes the args without evaling plus the context/env to macros" do
+      it "passes the args without evaluation when #macro? is true" do
         env = { symbol("fun") => macro.new }
         invocation = list(symbol("fun"), 420)
 
         expect(evaler.call(invocation, env)).to eq 420
       end
+
+      # rubocop: disable RSpec/ExampleLength
+      it "passes down the env if function asks for it via named param" do
+        ctx = {
+          "something" => "to check",
+          symbol("fun") => proc { |env:| env }
+        }
+        invocation = invoke("fun", 420)
+        result = evaler.call(invocation, ctx)
+
+        expect(result["something"]).to eq "to check"
+      end
+      # rubocop: enable RSpec/ExampleLength
 
       it "evaluates empty lists to themselves" do
         expect(evaler.call(list)).to eq list
