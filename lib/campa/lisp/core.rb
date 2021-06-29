@@ -9,6 +9,7 @@ module Campa
           sym("car") => Car.new,
           sym("cdr") => Cdr.new,
           sym("cons") => Cons.new,
+          sym("cond") => Cond.new,
         })
       end
 
