@@ -7,7 +7,7 @@ RSpec.describe Campa::Lisp::Cons do
       the_list = invoke("quote", list(symbol("b"), symbol("c")))
       ivk = invoke("cons", invoke("quote", symbol("a")), the_list)
 
-      expect(evaler.call(ivk, lisp)).to eq list(symbol("a"), symbol("a"), symbol("a"))
+      expect(evaler.call(ivk, lisp)).to eq list(symbol("a"), symbol("b"), symbol("c"))
     end
 
     it "raises if argument is not a list" do

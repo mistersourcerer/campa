@@ -7,5 +7,11 @@ module Campa
       @value = value
       @next_node = next_node
     end
+
+    def ==(other)
+      return false if !other.is_a?(Node)
+
+      value == other.value
+    end
   end
 end

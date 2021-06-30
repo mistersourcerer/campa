@@ -41,6 +41,7 @@ module Campa
 
       loop do
         return node.nil? && other_node.nil? if node.nil? || other_node.nil?
+        return false if node != other_node
 
         node = node.next_node
         other_node = other_node.next_node
