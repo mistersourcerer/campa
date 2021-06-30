@@ -40,5 +40,24 @@ RSpec.describe Campa::Lisp::LambdaFn do
 
       expect(evaler.call(ivk, lisp)).to eq 4.20
     end
+
+    # rubocop: disable RSpec/ExampleLength
+    it "allows to pass a lambda as argument" do
+      lambda_cons = invoke(
+        "lambda",
+        list(symbol("x")),
+        invoke("cons", invoke("quote", symbol("a")), symbol("x"))
+      )
+
+      lambda_ivk = invoke(
+        "lambda",
+        list(symbol("f")),
+        invoke("f", invoke("quote", list(symbol("b"), symbol("c"))))
+      )
+
+      ivk = list(lambda_ivk, invoke("quote", lambda_cons))
+      evaler.call(ivk, lisp)
+    end
+    # rubocop: enable RSpec/ExampleLength
   end
 end

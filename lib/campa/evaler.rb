@@ -1,5 +1,9 @@
 module Campa
   class Evaler
+    def initialize
+      @printer = Printer.new
+    end
+
     def call(expression, env = {})
       context = self.context(env)
 
@@ -17,6 +21,8 @@ module Campa
 
     private
 
+    attr_reader :printer
+
     def context(env)
       return env if env.is_a?(Context)
 
@@ -24,7 +30,7 @@ module Campa
     end
 
     def resolve(symbol, context)
-      raise Error::Resolution, symbol.label if !context.include?(symbol)
+      raise Error::Resolution, printer.call(symbol) if !context.include?(symbol)
 
       context[symbol]
     end
@@ -44,9 +50,12 @@ module Campa
         if invocation.head.is_a?(List)
           call(invocation.head, context)
         else
-          resolve(invocation.head, context)
+          resolve(invocation.head, context).then do |rs|
+            rs.is_a?(List) ? call(rs, context) : rs
+          end
         end
-      raise Error::NotAFunction, invocation.head if !fn.respond_to?(:call)
+
+      raise Error::NotAFunction, printer.call(invocation.head) if !fn.respond_to?(:call)
 
       fn
     end
