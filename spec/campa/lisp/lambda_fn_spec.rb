@@ -1,0 +1,44 @@
+RSpec.describe Campa::Lisp::LambdaFn do
+  let(:lisp) { Campa::Lisp::Core.new }
+  let(:evaler) { Campa::Evaler.new }
+
+  context "when lambda has no arguments" do
+    it "raises if parameters list is invalid (containing more then symbols)" do
+      ivk = invoke("lambda", list(symbol("print"), 1), 1)
+
+      expect { evaler.call(ivk, lisp) }.to raise_error(
+        Campa::Error::Parameters,
+        "Parameter list may only contain symbol: 1 is not a symbol."
+      )
+    end
+
+    it "creates the lambda object" do
+      ivk = invoke("lambda", list, invoke("quote", symbol("a")))
+
+      expect(evaler.call(ivk, lisp))
+        .to eq Campa::Lambda.new(list, [invoke("quote", symbol("a"))])
+    end
+
+    it "ensures lambda is created with the invocation env as a closure" do
+      ivk = invoke("lambda", list, symbol("a"))
+      ctx = Campa::Context.new(symbol("a") => 4.20)
+
+      expect(evaler.call(ivk, lisp.push(ctx)).call(env: lisp)).to eq 4.20
+    end
+
+    it "can be invoked inline" do
+      ctx = Campa::Context.new(symbol("a") => 4.20)
+      ivk = list(invoke("lambda", list, symbol("a")))
+
+      expect(evaler.call(ivk, lisp.push(ctx))).to eq 4.20
+    end
+  end
+
+  context "when lambda has arguments" do
+    it "can be invoked inline" do
+      ivk = list(invoke("lambda", list(symbol("a")), symbol("a")), 4.20)
+
+      expect(evaler.call(ivk, lisp)).to eq 4.20
+    end
+  end
+end

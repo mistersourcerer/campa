@@ -30,15 +30,25 @@ module Campa
     end
 
     def invoke(invocation, context)
-      fn = resolve(invocation.head, context)
-      raise Error::NotAFunction, invocation.head if !fn.respond_to?(:call)
-
+      fn = extract_fun(invocation, context)
       args = args_for_fun(fn, invocation.tail.to_a, context)
       if with_env?(fn)
         fn.call(*args, env: context)
       else
         fn.call(*args)
       end
+    end
+
+    def extract_fun(invocation, context)
+      fn =
+        if invocation.head.is_a?(List)
+          call(invocation.head, context)
+        else
+          resolve(invocation.head, context)
+        end
+      raise Error::NotAFunction, invocation.head if !fn.respond_to?(:call)
+
+      fn
     end
 
     def args_for_fun(fun, args, context)

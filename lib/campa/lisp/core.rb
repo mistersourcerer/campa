@@ -10,7 +10,8 @@ module Campa
           sym("cdr") => Cdr.new,
           sym("cons") => Cons.new,
           sym("cond") => Cond.new,
-        })
+          sym("lambda") => LambdaFn.new,
+        }.freeze)
       end
 
       private
