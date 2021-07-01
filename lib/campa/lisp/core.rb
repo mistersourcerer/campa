@@ -1,6 +1,7 @@
 module Campa
   module Lisp
     class Core < Context
+      # rubocop: disable Metrics/MethodLength, Metrics/AbcSize
       def initialize
         super({
           sym("quote") => Quote.new,
@@ -11,8 +12,10 @@ module Campa
           sym("cons") => Cons.new,
           sym("cond") => Cond.new,
           sym("lambda") => LambdaFn.new,
+          sym("label") => Label.new,
         }.freeze)
       end
+      # rubocop: enable Metrics/MethodLength, Metrics/AbcSize
 
       private
 
