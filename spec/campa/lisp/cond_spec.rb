@@ -2,6 +2,7 @@ RSpec.describe Campa::Lisp::Cond do
   let(:lisp) { Campa::Lisp::Core.new }
   let(:evaler) { Campa::Evaler.new }
 
+  # rubocop: disable RSpec/ExampleLength
   describe "(cond ...)" do
     it "raises if argument is not a list" do
       expect { evaler.call(invoke("cond", "1"), lisp) }.to raise_error(
@@ -10,7 +11,6 @@ RSpec.describe Campa::Lisp::Cond do
       )
     end
 
-    # rubocop: disable RSpec/ExampleLength
     it "returns the second element besides the first truethy value" do
       conditions = [
         list(
@@ -22,13 +22,11 @@ RSpec.describe Campa::Lisp::Cond do
           invoke("quote", symbol("second"))
         ),
       ]
-      ivk = invoke("cond", list(*conditions))
+      ivk = invoke("cond", *conditions)
 
       expect(evaler.call(ivk, lisp)).to eq symbol("second")
     end
-    # rubocop: enable RSpec/ExampleLength
 
-    # rubocop: disable RSpec/ExampleLength
     it "returns nil if none of the condition 'heads' eval to true" do
       conditions = [
         list(
@@ -40,13 +38,11 @@ RSpec.describe Campa::Lisp::Cond do
           invoke("quote", symbol("second"))
         ),
       ]
-      ivk = invoke("cond", list(*conditions))
+      ivk = invoke("cond", *conditions)
 
       expect(evaler.call(ivk, lisp)).to eq nil
     end
-    # rubocop: enable RSpec/ExampleLength
 
-    # rubocop: disable RSpec/ExampleLength
     it "returns the value of the truethy expression itself if no 'tail' is given" do
       conditions = [
         list(
@@ -55,10 +51,20 @@ RSpec.describe Campa::Lisp::Cond do
         ),
         list(1),
       ]
-      ivk = invoke("cond", list(*conditions))
+      ivk = invoke("cond", *conditions)
 
       expect(evaler.call(ivk, lisp)).to eq 1
     end
-    # rubocop: enable RSpec/ExampleLength
+
+    it "knows to evaluate conditions when first term is already evaled" do
+      conditions = [
+        list(false, invoke("quote", symbol("x"))),
+        list(true, invoke("quote", symbol("y")))
+      ]
+      ivk = invoke("cond", *conditions)
+
+      expect(evaler.call(ivk, lisp)).to eq symbol("y")
+    end
   end
+  # rubocop: enable RSpec/ExampleLength
 end

@@ -12,13 +12,13 @@ module Campa
         true
       end
 
-      def call(conditions, env:)
-        raise illegal_argument(conditions) if !conditions.is_a?(List)
-
+      def call(*conditions, env:)
         found = conditions.find do |cond|
-          # raise if cond is not a list
+          raise illegal_argument(cond) if !cond.is_a?(List)
+
           !FALSEY.include? @evaler.call(cond.head, env)
         end
+
         eval_result(found, env)
       end
 
