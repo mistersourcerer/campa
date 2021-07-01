@@ -24,4 +24,13 @@ RSpec.describe Campa::Printer do
       expect(printer.call(to_print)).to eq "(1 \"2\" (three 4.2) true false)"
     end
   end
+
+  context "when outputing lambdas" do
+    it "outputs the creation instruction for the lambda" do
+      to_print =
+        Campa::Lambda.new(list, [invoke("label", symbol("x"), 4.20), symbol("x")])
+
+      expect(printer.call(to_print)).to eq "(lambda () (label x 4.2) x)"
+    end
+  end
 end

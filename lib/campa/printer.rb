@@ -6,6 +6,7 @@ module Campa
       List => :list,
       TrueClass => :boolean,
       FalseClass => :boolean,
+      Lambda => :lambda,
     }.freeze
 
     def call(expr)
@@ -29,6 +30,15 @@ module Campa
 
     def boolean(expr)
       (expr == true).to_s
+    end
+
+    def lambda(expr)
+      list(
+        List
+          .new(expr.body.map { |e| call(e) })
+          .push(expr.params)
+          .push(Symbol.new("lambda"))
+      )
     end
 
     def default(expr)

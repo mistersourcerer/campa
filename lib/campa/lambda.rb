@@ -2,6 +2,8 @@ module Campa
   class Lambda
     EVALER = Evaler.new
 
+    attr_reader :params, :body, :closure
+
     def initialize(params, body, closure = Context.new)
       @params = params
       @body = body
@@ -20,10 +22,6 @@ module Campa
 
       params == other.params && body == other.body
     end
-
-    protected
-
-    attr_reader :params, :body, :closure
 
     private
 
