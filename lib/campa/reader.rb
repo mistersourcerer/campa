@@ -17,7 +17,7 @@ module Campa
 
     def next
       eat_separators
-      return if @input.eof? && separator?
+      return if @input.eof? && @current_char.nil?
 
       read
     end
@@ -47,9 +47,12 @@ module Campa
     end
 
     def eat_separators
-      return if @input.eof?
+      if @input.eof?
+        @current_char = nil if separator? || break?
+        return
+      end
 
-      next_char while separator?
+      next_char while separator? || break?
     end
 
     # rubocop: disable Metrics/MethodLength, Metrics/PerceivedComplexity
@@ -164,7 +167,11 @@ module Campa
     end
 
     def separator?
-      ["\s", ",", "\n"].include? @current_char
+      ["\s", ","].freeze.include? @current_char
+    end
+
+    def break?
+      @current_char == "\n"
     end
 
     def delimiter?

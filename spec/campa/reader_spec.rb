@@ -149,5 +149,15 @@ RSpec.describe Campa::Reader do
         expect([reader.next, reader.next]).to eq [1, nil]
       end
     end
+
+    context "when a list is already read" do
+      it "doesnt return a nil symbol, but just the actual nil value" do
+        reader =
+          new_reader("(subst (quote m) (quote b) (quote (a b (a b c) d)))")
+        reader.next
+
+        expect(reader.next).to eq nil
+      end
+    end
   end
 end
