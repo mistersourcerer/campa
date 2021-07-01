@@ -4,7 +4,7 @@ module Campa
       @reader = reader
       @evaler = evaler
       @context = context
-      @environment = Context.new(@context)
+      @environment = @context.push(Context.new)
       @printer = Printer.new
     end
 
