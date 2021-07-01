@@ -36,6 +36,8 @@ module Campa
     end
 
     def ==(other)
+      return false if !other.is_a?(List)
+
       node = first
       other_node = other.first
 
