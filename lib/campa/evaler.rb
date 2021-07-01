@@ -19,6 +19,14 @@ module Campa
       end
     end
 
+    def eval(reader, env = {})
+      result = nil
+      while (token = reader.next)
+        result = call(token, env)
+      end
+      result
+    end
+
     private
 
     attr_reader :printer

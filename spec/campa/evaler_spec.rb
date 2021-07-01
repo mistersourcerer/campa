@@ -15,24 +15,13 @@ RSpec.describe Campa::Evaler do
 
   describe "#call", "expressions" do
     context "when evaluating 'primitives'" do
-      it "returns the integer passed as param" do
-        expect(evaler.call(1)).to eq 1
+      it "evaluates numberics" do
+        expect([evaler.call(1), evaler.call(4.2), evaler.call(-4.2)])
+          .to eq [1, 4.2, -4.2]
       end
 
-      it "returns the float passed" do
-        expect(evaler.call(4.2)).to eq 4.2
-      end
-
-      it "doesn't discriminate agains negatives XD" do
-        expect(evaler.call(-4.2)).to eq(-4.2)
-      end
-
-      it "returns true when receiving it" do
-        expect(evaler.call(true)).to eq true
-      end
-
-      it "returns false when receiving it" do
-        expect(evaler.call(false)).to eq false
+      it "evaluates booleans to themselves" do
+        expect([evaler.call(false), evaler.call(true)]).to eq [false, true]
       end
 
       it "returns nil when receiving it" do
@@ -90,24 +79,21 @@ RSpec.describe Campa::Evaler do
         }
         invocation = list(symbol("fun"), symbol("num"), symbol("str"))
 
-        expect(evaler.call(invocation, env))
-          .to match_array [420, "stuff"]
+        expect(evaler.call(invocation, env)).to match_array [420, "stuff"]
       end
       # rubocop: enable RSpec/ExampleLength
 
       it "raises if symbol does not resolve to a function" do
         env = { symbol("nein") => "no #call" }
-        invocation = list(symbol("nein"))
 
-        expect { evaler.call(invocation, env) }
+        expect { evaler.call(invoke("nein"), env) }
           .to raise_error Campa::Error::NotAFunction
       end
 
       it "passes the args without evaluation when #macro? is true" do
         env = { symbol("fun") => macro.new }
-        invocation = list(symbol("fun"), 420)
 
-        expect(evaler.call(invocation, env)).to eq 420
+        expect(evaler.call(invoke("fun", 420), env)).to eq 420
       end
 
       # rubocop: disable RSpec/ExampleLength
@@ -116,8 +102,7 @@ RSpec.describe Campa::Evaler do
           "something" => "to check",
           symbol("fun") => proc { |env:| env }
         }
-        invocation = invoke("fun", 420)
-        result = evaler.call(invocation, ctx)
+        result = evaler.call(invoke("fun", 420), ctx)
 
         expect(result["something"]).to eq "to check"
       end
@@ -129,6 +114,21 @@ RSpec.describe Campa::Evaler do
 
       xit "ensures the function has it's own context" do
       end
+    end
+  end
+
+  describe "#eval" do
+    let(:context) { Campa::Lisp::Core.new.push(Campa::Context.new) }
+    let(:reader) do
+      Campa::Reader.new(<<~CODE)
+        (label omg 4.20)
+        (label fun (lambda (x) x))
+        (fun omg)
+      CODE
+    end
+
+    it "evaluates the whole code given to a reader" do
+      expect(evaler.eval(reader, context)).to eq 4.20
     end
   end
 end
