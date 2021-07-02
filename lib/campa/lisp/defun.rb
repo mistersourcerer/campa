@@ -1,8 +1,10 @@
 module Campa
   module Lisp
     class Defun
-      PRINTER = Printer.new
-      LABEL = Label.new
+      def initialize
+        @printer = Printer.new
+        @label_fn = Label.new
+      end
 
       def macro?
         true
@@ -11,13 +13,15 @@ module Campa
       def call(label, params, *body, env:)
         raise label_error(label) if !label.is_a?(Symbol)
 
-        LABEL.call(label, invoke_lambda(params, body), env: env)
+        label_fn.call(label, invoke_lambda(params, body), env: env)
       end
 
       private
 
+      attr_reader :printer, :label_fn
+
       def label_error(given)
-        Error::IllegalArgument.new(PRINTER.call(given), "symbol")
+        Error::IllegalArgument.new(printer.call(given), "symbol")
       end
 
       def invoke_lambda(params, body)
