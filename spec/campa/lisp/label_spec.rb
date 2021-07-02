@@ -19,7 +19,6 @@ RSpec.describe Campa::Lisp::Label do
     end
 
     context "when ensuring to cover Roots of Lisp XD" do
-      # (cond ((eq 1 2) 'x) (true 'z)))
       let(:reader) do
         Campa::Reader.new(<<~LISP)
           (label subst (lambda (x y z)

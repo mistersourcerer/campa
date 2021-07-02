@@ -6,7 +6,7 @@ module Campa
 
     def initialize(params, body, closure = Context.new)
       @params = params
-      @body = body
+      @body = Array(body)
       @closure = closure
     end
 

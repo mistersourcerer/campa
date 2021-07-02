@@ -13,6 +13,7 @@ module Campa
           sym("cond") => Cond.new,
           sym("lambda") => LambdaFn.new,
           sym("label") => Label.new,
+          sym("defun") => Defun.new,
         }.freeze)
       end
       # rubocop: enable Metrics/MethodLength, Metrics/AbcSize

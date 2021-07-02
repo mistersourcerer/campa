@@ -8,7 +8,7 @@ RSpec.describe Campa::Lisp::LambdaFn do
 
       expect { evaler.call(ivk, lisp) }.to raise_error(
         Campa::Error::Parameters,
-        "Parameter list may only contain symbol: 1 is not a symbol."
+        "Parameter list may only contain symbol: 1 is not a symbol"
       )
     end
 
