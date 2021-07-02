@@ -44,5 +44,41 @@ RSpec.describe Campa::Lisp::Label do
       end
       # rubocop: enable RSpec/ExampleLength
     end
+
+    context "when lambda naming collides with reserved naming /c(a|d)+r/" do
+      it "raises when creating a caar function" do
+        ivk = invoke("label", symbol("caar"), invoke("lambda", list, 4.20))
+
+        expect { evaler.call(ivk, context) }.to raise_error(
+          Campa::Error::Reserved,
+          "Reserved function name: caar is already taken, sorry about that"
+        )
+      end
+
+      it "raises when creating a cddr function" do
+        ivk = invoke("label", symbol("cddr"), invoke("lambda", list, 4.20))
+
+        expect { evaler.call(ivk, context) }.to raise_error(
+          Campa::Error::Reserved,
+          "Reserved function name: cddr is already taken, sorry about that"
+        )
+      end
+
+      it "raises when creating a cadr function" do
+        ivk = invoke("label", symbol("cadr"), invoke("lambda", list, 4.20))
+
+        expect { evaler.call(ivk, context) }.to raise_error(
+          Campa::Error::Reserved,
+          "Reserved function name: cadr is already taken, sorry about that"
+        )
+      end
+
+      it "doesn't raise for cxr function" do
+        ivk = invoke("label", symbol("cxr"), invoke("lambda", list, 4.20))
+        evaler.call(ivk, context)
+
+        expect(evaler.call(invoke("cxr"), context)).to eq 4.20
+      end
+    end
   end
 end
