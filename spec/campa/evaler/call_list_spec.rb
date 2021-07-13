@@ -80,4 +80,31 @@ RSpec.describe Campa::Evaler, "#call" do
 
   xit "ensures the function has it's own context" do
   end
+
+  context "when invoking a /c(a|d)+r/ function" do
+    let(:cadr) do
+      Class.new do
+        def call(operation, list)
+          [operation, list]
+        end
+
+        def macro?
+          true
+        end
+      end
+    end
+
+    # rubocop: disable RSpec/ExampleLength
+    it "dispatches the invocation to (cadr ...)" do
+      ctx = {
+        symbol("quote") => Campa::Lisp::Quote.new,
+        symbol("_cadr") => cadr.new
+      }
+      list = invoke("quote", list(1, 2, 3, 4))
+
+      expect(evaler.call(invoke("caaddr", list), ctx))
+        .to eq [symbol("caaddr"), list(1, 2, 3, 4)]
+    end
+    # rubocop: enable RSpec/ExampleLength
+  end
 end

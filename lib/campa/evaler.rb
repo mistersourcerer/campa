@@ -44,6 +44,8 @@ module Campa
     end
 
     def invoke(invocation, context)
+      return invoke_cadr(invocation, context) if cr?(invocation)
+
       fn = extract_fun(invocation, context)
       args = args_for_fun(fn, invocation.tail.to_a, context)
       if with_env?(fn)
@@ -53,9 +55,25 @@ module Campa
       end
     end
 
+    def cr?(invocation)
+      invocation.head.is_a?(Symbol) &&
+        invocation.head.label.match?(CR_REGEX)
+    end
+
+    def invoke_cadr(invocation, context)
+      call(
+        List.new(
+          Symbol.new("_cadr"),
+          invocation.head,
+          call(invocation.tail.head, context)
+        ),
+        context
+      )
+    end
+
     def extract_fun(invocation, context)
       fn =
-        if invocation.head.is_a?(List)
+        if invocation.head.is_a?(List) # possible lambda invocation
           call(invocation.head, context)
         else
           resolve(invocation.head, context).then do |rs|
