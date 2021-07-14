@@ -18,7 +18,7 @@ module Campa
           token = reader.next
           break if token.nil?
 
-          show(output, @evaler.call(token, @environment))
+          show(output, evaler.call(token, environment))
         rescue ExecutionError => e
           output.puts "Execution Error: #{e.class}"
           output.puts e.message
@@ -33,6 +33,8 @@ module Campa
 
     private
 
+    attr_reader :evaler, :environment, :printer
+
     def show(output, result)
       output
         .puts(
@@ -43,7 +45,7 @@ module Campa
     end
 
     def format(result)
-      @printer.call(result)
+      printer.call(result)
     end
   end
 end

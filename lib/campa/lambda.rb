@@ -1,20 +1,19 @@
 module Campa
   class Lambda
-    EVALER = Evaler.new
-
     attr_reader :params, :body, :closure
 
     def initialize(params, body, closure = Context.new)
       @params = params
       @body = Array(body)
       @closure = closure
+      @evaler = Evaler.new
     end
 
     def call(*args, env:)
       raise arity_error(args) if params.to_a.length != args.length
 
       ivk_env = invocation_env(env, args)
-      @body.reduce(nil) { |_, expression| EVALER.call(expression, ivk_env) }
+      @body.reduce(nil) { |_, expression| evaler.call(expression, ivk_env) }
     end
 
     def ==(other)
@@ -24,6 +23,8 @@ module Campa
     end
 
     private
+
+    attr_reader :evaler
 
     def arity_error(args)
       Error::Arity.new("lambda", params.to_a.length, args.length)

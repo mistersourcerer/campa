@@ -13,8 +13,10 @@ module Campa
 
       private
 
+      attr_reader :printer
+
       def illegal_argument(list)
-        Error::IllegalArgument.new(@printer.call(list), "list")
+        Error::IllegalArgument.new(printer.call(list), "list")
       end
     end
   end

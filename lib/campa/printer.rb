@@ -16,6 +16,8 @@ module Campa
 
     private
 
+    SYM_LAMBDA = Symbol.new("lambda")
+
     def string(expr)
       "\"#{expr}\""
     end
@@ -37,7 +39,7 @@ module Campa
         List
           .new(expr.body.map { |e| call(e) })
           .push(expr.params)
-          .push(Symbol.new("lambda"))
+          .push(SYM_LAMBDA)
       )
     end
 

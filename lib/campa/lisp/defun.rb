@@ -18,6 +18,8 @@ module Campa
 
       private
 
+      SYM = Symbol.new("lambda")
+
       attr_reader :printer, :label_fn
 
       def label_error(given)
@@ -25,7 +27,7 @@ module Campa
       end
 
       def invoke_lambda(params, body)
-        List.new(symbol("lambda"), params, *body)
+        List.new(SYM, params, *body)
       end
     end
   end

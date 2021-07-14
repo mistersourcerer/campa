@@ -34,17 +34,21 @@ RSpec.describe Campa::Context do
 
   describe "#[]" do
     context "when there are stacked environments" do
-      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+      # rubocop:disable RSpec/ExampleLength
       it "returns the binding in the last environment" do
         context[symbol("dont_touchme")] = "ok"
         new_context = context.push(symbol("dont_touchme") => "nok")
         another = new_context.push(symbol("dont_touchme") => "eew")
 
-        expect(another[symbol("dont_touchme")]).to eq "eew"
-        expect(new_context[symbol("dont_touchme")]).to eq "nok"
-        expect(context[symbol("dont_touchme")]).to eq "ok"
+        expect(
+          [
+            another[symbol("dont_touchme")],
+            new_context[symbol("dont_touchme")],
+            context[symbol("dont_touchme")]
+          ]
+        ).to match_array %w[eew nok ok]
       end
-      # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
+      # rubocop:enable RSpec/ExampleLength
 
       it "fallbacks to the underlying environments" do
         context[symbol("time")] = 420

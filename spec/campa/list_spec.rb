@@ -2,18 +2,21 @@ RSpec.describe Campa::List do
   let(:empty) { described_class::EMPTY }
 
   describe ".new" do
-    # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+    # rubocop:disable RSpec/ExampleLength
     it "creates a linked list with the given elements" do
       list = described_class.new(1, 2, 3, 4, 5)
+      expectations = [
+        list.head,
+        list.tail.head,
+        list.tail.tail.head,
+        list.tail.tail.tail.head,
+        list.tail.tail.tail.tail.head,
+        list.tail.tail.tail.tail.tail
+      ]
 
-      expect(list.head).to eq 1
-      expect(list.tail.head).to eq 2
-      expect(list.tail.tail.head).to eq 3
-      expect(list.tail.tail.tail.head).to eq 4
-      expect(list.tail.tail.tail.tail.head).to eq 5
-      expect(list.tail.tail.tail.tail.tail).to eq empty
+      expect(expectations).to match_array [1, 2, 3, 4, 5, empty]
     end
-    # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
+    # rubocop:enable RSpec/ExampleLength
   end
 
   describe "#push" do

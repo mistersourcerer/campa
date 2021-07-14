@@ -5,13 +5,7 @@ module Campa
   class Reader
     # rubocop: enable Metrics/ClassLength
     def initialize(input)
-      @input =
-        if input.respond_to?(:getc) && input.respond_to?(:eof?)
-          input
-        else
-          to_io_like(input)
-        end
-
+      @input = to_io_like(input)
       next_char
     end
 
@@ -24,7 +18,15 @@ module Campa
 
     private
 
+    SEPARATORS = ["\s", ","].freeze
+    BOOLS = %w[true false].freeze
+    CAST_INT = ->(str) { Integer(str) }
+    CAST_FLOAT = ->(str) { Float(str) }
+    SYM_QUOTE = Symbol.new("quote")
+
     def to_io_like(input)
+      return input if input.respond_to?(:getc) && input.respond_to?(:eof?)
+
       # TODO: check if it is "castable" first,
       StringIO.new(input)
     end
@@ -56,27 +58,27 @@ module Campa
     end
 
     # rubocop: disable Metrics/MethodLength, Metrics/PerceivedComplexity
-    # rubocop: disable Style/EmptyCaseCondition, Metrics/AbcSize, Metrics/CyclomaticComplexity
+    # rubocop: disable Style/EmptyCaseCondition
+    # rubocop: disable Metrics/CyclomaticComplexity
     def read
       case
       when @current_char == "\""
         read_string
-      when digit?
+      when digit? || @current_char == "-" && digit?(peek)
         read_number
-      when @current_char == "-"
-        digit?(peek) ? read_number : read_symbol
       when @current_char == "'"
         read_quotation
       when @current_char == "("
         read_list
-      when @current_char == "t" || @current_char == "f"
-        boolean? ? read_boolean : read_symbol
+      when boolean?
+        read_boolean
       else
         read_symbol
       end
     end
     # rubocop: enable Metrics/MethodLength, Metrics/PerceivedComplexity
-    # rubocop: enable Style/EmptyCaseCondition, Metrics/AbcSize, Metrics/CyclomaticComplexity
+    # rubocop: enable Style/EmptyCaseCondition
+    # rubocop: enable Metrics/CyclomaticComplexity
 
     def read_string
       return if @input.eof?
@@ -99,10 +101,10 @@ module Campa
 
     def read_number
       number = @current_char
-      cast = ->(str) { Integer(str) }
+      cast = CAST_INT
 
       until @input.eof?
-        cast = ->(str) { Float(str) } if @current_char == "."
+        cast = CAST_FLOAT if @current_char == "."
         next_char
         break if separator? || delimiter?
 
@@ -123,7 +125,7 @@ module Campa
       next_char
 
       expression = self.next
-      List.new(Symbol.new("quote"), expression)
+      List.new(SYM_QUOTE, expression)
     end
 
     def read_list
@@ -167,7 +169,7 @@ module Campa
     end
 
     def separator?
-      ["\s", ","].freeze.include? @current_char
+      SEPARATORS.include? @current_char
     end
 
     def break?
@@ -190,7 +192,7 @@ module Campa
 
       @current_token = @current_char
       @current_token << next_char until @input.eof? || peek == " " || peek == ")"
-      %w[true false].include? @current_token
+      BOOLS.include? @current_token
     end
   end
 end

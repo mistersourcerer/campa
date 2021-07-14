@@ -8,13 +8,11 @@ module Campa
       context = self.context(env)
 
       case expression
-      when Numeric, TrueClass, FalseClass, NilClass, String, ::Symbol
+      when Numeric, TrueClass, FalseClass, NilClass, String, ::Symbol, List::EMPTY
         expression
       when Symbol
         resolve(expression, context)
       when List
-        return List::EMPTY if expression == List::EMPTY
-
         invoke(expression, context)
       end
     end
@@ -48,11 +46,9 @@ module Campa
 
       fn = extract_fun(invocation, context)
       args = args_for_fun(fn, invocation.tail.to_a, context)
-      if with_env?(fn)
-        fn.call(*args, env: context)
-      else
-        fn.call(*args)
-      end
+      return fn.call(*args, env: context) if with_env?(fn)
+
+      fn.call(*args)
     end
 
     def cr?(invocation)
@@ -72,40 +68,35 @@ module Campa
     end
 
     def extract_fun(invocation, context)
-      fn =
-        if invocation.head.is_a?(List) # possible lambda invocation
-          call(invocation.head, context)
-        else
-          resolve(invocation.head, context).then do |rs|
-            rs.is_a?(List) ? call(rs, context) : rs
-          end
-        end
+      # probable lambda invocation
+      return call(invocation.head, context) if invocation.head.is_a?(List)
 
-      raise Error::NotAFunction, printer.call(invocation.head) if !fn.respond_to?(:call)
+      resolve(invocation.head, context)
+        .then { |rs| rs.is_a?(List) ? call(rs, context) : rs }
+        .tap { |fn| raise not_a_function(invocation) if !fn.respond_to?(:call) }
+    end
 
-      fn
+    def not_a_function(invocation)
+      Error::NotAFunction.new printer.call(invocation.head)
     end
 
     def args_for_fun(fun, args, context)
-      if fun.respond_to?(:macro?) && fun.macro?
-        args
-      else
-        args.map { |exp| call(exp, context) }
-      end
+      return args if fun.respond_to?(:macro?) && fun.macro?
+
+      args.map { |exp| call(exp, context) }
     end
 
     def with_env?(fun)
-      parameters =
-        if fun.is_a?(Proc)
-          fun.parameters
-        else
-          fun.method(:call).parameters
-        end
-
-      !parameters
+      !params_from_fun(fun)
         .filter { |param| param[0] == :keyreq }
         .find { |param| param[1] == :env }
         .nil?
+    end
+
+    def params_from_fun(fun)
+      return fun.parameters if fun.is_a?(Proc)
+
+      fun.method(:call).parameters
     end
   end
 end

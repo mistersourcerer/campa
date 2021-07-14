@@ -16,7 +16,7 @@ module Campa
         found = conditions.find do |cond|
           raise illegal_argument(cond) if !cond.is_a?(List)
 
-          !FALSEY.include? @evaler.call(cond.head, env)
+          !FALSEY.include? evaler.call(cond.head, env)
         end
 
         eval_result(found, env)
@@ -24,21 +24,24 @@ module Campa
 
       private
 
+      attr_reader :evaler, :printer
+
       def illegal_argument(thing)
-        Error::IllegalArgument.new(@printer.call(thing), "list")
+        Error::IllegalArgument.new(printer.call(thing), "list")
       end
 
       def eval_result(found, env)
         return if found.nil?
 
-        to_eval =
-          if found.tail == List::EMPTY
-            found.head
-          else
-            found.tail.head
-          end
-
-        @evaler.call(to_eval, env)
+        # For when condition is a "truethy" value
+        #
+        # (cond
+        #   ((eq 1 2) 'no)
+        #   (true 'yes)
+        # )
+        # => 'yes
+        to_eval = found.tail == List::EMPTY ? found.head : found.tail.head
+        evaler.call(to_eval, env)
       end
     end
   end

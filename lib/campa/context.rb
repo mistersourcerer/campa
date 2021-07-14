@@ -11,7 +11,7 @@ module Campa
     def [](symbol)
       return env[symbol] if env.include?(symbol)
 
-      return fallback[symbol] if !fallback.nil?
+      fallback[symbol] if !fallback.nil?
     end
 
     def include?(symbol)
