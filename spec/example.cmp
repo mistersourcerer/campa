@@ -1,0 +1,3 @@
+(defun hi-there (name) name)
+
+(defun echo (x) x)

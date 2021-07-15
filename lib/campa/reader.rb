@@ -26,6 +26,7 @@ module Campa
 
     def to_io_like(input)
       return input if input.respond_to?(:getc) && input.respond_to?(:eof?)
+      return File.new(input) if File.exist?(input)
 
       # TODO: check if it is "castable" first,
       StringIO.new(input)

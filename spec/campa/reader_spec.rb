@@ -151,7 +151,7 @@ RSpec.describe Campa::Reader do
     end
 
     context "when a list is already read" do
-      it "doesnt return a nil symbol, but just the actual nil value" do
+      it "doesn't return a nil symbol, but just the actual nil value" do
         reader =
           new_reader("(subst (quote m) (quote b) (quote (a b (a b c) d)))")
         reader.next

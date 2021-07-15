@@ -15,6 +15,8 @@ module Campa
 
         "_cadr" => Cadr,
         "list" => ListFn,
+
+        "load" => Campa::Core::Load,
       }.freeze
 
       def initialize
