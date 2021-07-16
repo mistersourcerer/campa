@@ -32,35 +32,37 @@ RSpec.describe Campa::Repl do
     end
 
     context "when handling reader/evaler exceptions" do
-      # rubocop: disable RSpec/ExampleLength
       it "shows the error and waits for next input" do
         repl.run(input("(non-existent-fun 1)\n"), output)
 
-        expect(output.string.split("\n")).to eq [
+        expect(output.string.split("\n")[0..1]).to eq [
           "=> Execution Error: Campa::Error::Resolution",
-          "Unable to resolve symbol: non-existent-fun in this context",
-          "=> "
+          "  message: Unable to resolve symbol: non-existent-fun in this context"
         ]
       end
-      # rubocop: enable RSpec/ExampleLength
     end
 
-    # rubocop: disable RSpec/MultipleMemoizedHelpers, RSpec/VerifiedDoubles
-    context "when handling interruption" do
-      subject(:repl) do
-        described_class.new(evaler, lisp, reader: reader_class)
-      end
+    # rubocop: disable RSpec/MultipleMemoizedHelpers
+    context "when handling exceptions" do
+      subject(:repl) { described_class.new(evaler, lisp, reader: reader_class) }
 
-      let(:broken_reader) { double }
-      let(:reader_class) { double(new: broken_reader) }
+      let(:broken_reader) { instance_double("Reader") }
+      let(:reader_class) { instance_double("Class", new: broken_reader) }
 
-      it "shows a polite good bye message" do
+      it "shows a polite good bye message when Interrupt is raised" do
         allow(broken_reader).to receive(:next).and_raise(Interrupt)
         repl.run(input, output)
 
         expect(output.string).to eq "=> see you soon\n"
       end
+
+      it "handles standard error exceptions with polite good bye message" do
+        allow(broken_reader).to receive(:next).and_raise(StandardError)
+        repl.run(input, output)
+
+        expect(output.string.split("\n")[-1]).to eq "see you soon"
+      end
     end
-    # rubocop: enable RSpec/MultipleMemoizedHelpers, RSpec/VerifiedDoubles
+    # rubocop: enable RSpec/MultipleMemoizedHelpers
   end
 end

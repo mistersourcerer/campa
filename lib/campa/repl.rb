@@ -20,8 +20,9 @@ module Campa
 
           show(output, evaler.call(token, environment))
         rescue ExecutionError => e
-          output.puts "Execution Error: #{e.class}"
-          output.puts e.message
+          handle_exec_error(output, e)
+        rescue StandardError => e
+          handle_standard_error(output, e)
         end
 
         output.print "=> "
@@ -46,6 +47,30 @@ module Campa
 
     def format(result)
       printer.call(result)
+    end
+
+    def handle_exec_error(output, exception)
+      output.puts "Execution Error: #{exception.class}"
+      output.puts "  message: #{exception.message}"
+      output.puts "  >> Runtime details:"
+      output.puts back_trace_to_s(exception)
+    end
+
+    def handle_standard_error(output, exception)
+      output.puts "FATAL!"
+      output.puts "Exeception error was raised at Runtime level"
+      output.puts "Runtime Error: #{exception.class}"
+      output.puts "  message: #{exception.message}"
+      output.puts back_trace_to_s(exception)
+      raise Interrupt
+    end
+
+    def back_trace_to_s(exception)
+      exception
+        .backtrace[0..10]
+        .push("...")
+        .map { |s| "    #{s}" }
+        .join("\n")
     end
   end
 end
