@@ -50,6 +50,11 @@ module Campa
       end
     end
 
+    def inspect
+      @printer ||= Printer.new
+      @printer.call(self)
+    end
+
     protected
 
     attr_accessor :first
