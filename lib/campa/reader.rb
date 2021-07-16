@@ -160,7 +160,7 @@ module Campa
 
       until @input.eof?
         next_char
-        break if separator? || delimiter?
+        break if separator? || delimiter? || break?
 
         label << @current_char
       end

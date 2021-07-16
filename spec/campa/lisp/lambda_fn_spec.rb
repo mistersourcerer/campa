@@ -1,6 +1,7 @@
 RSpec.describe Campa::Lisp::LambdaFn do
   let(:lisp) { Campa::Lisp::Core.new }
   let(:evaler) { Campa::Evaler.new }
+  let(:root) { Campa.root }
 
   context "when lambda has no arguments" do
     it "raises if parameters list is invalid (containing more then symbols)" do
@@ -59,5 +60,18 @@ RSpec.describe Campa::Lisp::LambdaFn do
       evaler.call(ivk, lisp)
     end
     # rubocop: enable RSpec/ExampleLength
+  end
+
+  context "when there is a 'deeper' context (fallback) during the execution" do
+    let(:lang) { Campa::Language.new }
+    let(:ctx) { lang.push(Campa::Context.new) }
+
+    it "finds the correct functions" do
+      Campa::Core::Load
+        .new
+        .call(root.join("../spec/example.cmp"), env: ctx)
+
+      evaler.call(invoke("is-one?", 1), ctx)
+    end
   end
 end

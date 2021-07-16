@@ -1,3 +1,7 @@
 (defun hi-there (name) name)
 
 (defun echo (x) x)
+
+(defun is-one? (x)
+  (cond ((eq x 1) true)
+        (true false)))

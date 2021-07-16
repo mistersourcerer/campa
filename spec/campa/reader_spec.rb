@@ -111,6 +111,11 @@ RSpec.describe Campa::Reader do
           ]
       end
       # rubocop: enable RSpec/ExampleLength
+
+      it "reads invocations into lists even when there are line breaks" do
+        expect(new_reader("(bbq\n  \"yas\")").next)
+          .to eq list(symbol("bbq"), "yas")
+      end
     end
 
     context "when quoting" do
