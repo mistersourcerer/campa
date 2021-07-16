@@ -3,5 +3,5 @@
 require "campa"
 
 Campa::Repl
-  .new(Campa::Evaler.new, Campa::Lisp::Core.new)
+  .new(Campa::Evaler.new, Campa::Language.new)
   .run($stdin, $stdout)
