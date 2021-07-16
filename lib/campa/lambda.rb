@@ -12,8 +12,12 @@ module Campa
     def call(*args, env:)
       raise arity_error(args) if params.to_a.length != args.length
 
-      ivk_env = invocation_env(env, args)
-      @body.reduce(nil) { |_, expression| evaler.call(expression, ivk_env) }
+      @body.reduce(nil) do |_, expression|
+        evaler.call(
+          expression,
+          invocation_env(env, args)
+        )
+      end
     end
 
     def ==(other)
