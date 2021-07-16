@@ -33,4 +33,20 @@ RSpec.describe Campa::Printer do
       expect(printer.call(to_print)).to eq "(lambda () (label x 4.2) x)"
     end
   end
+
+  context "when outputing contexts" do
+    # rubocop: disable RSpec/ExampleLength
+    it "show fallbacks idented in relation to current context" do
+      first = Campa::Context.new(symbol("z") => symbol("a"))
+      fallback = first.push Campa::Context.new(symbol("z") => symbol("b"))
+      to_print = fallback.push Campa::Context.new(
+        symbol("lol") => symbol("bbq"),
+        symbol("time") => 420
+      )
+
+      expect(printer.call(to_print))
+        .to eq "lol: bbq\ntime: 420\n  z: b\n    z: a"
+    end
+    # rubocop: enable RSpec/ExampleLength
+  end
 end

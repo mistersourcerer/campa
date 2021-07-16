@@ -7,10 +7,13 @@ module Campa
       TrueClass => :boolean,
       FalseClass => :boolean,
       Lambda => :lambda,
+      Context => :context,
     }.freeze
 
     def call(expr)
-      format = FORMATS.fetch(expr.class, :default)
+      format = FORMATS.fetch(expr.class) do
+        expr.is_a?(Context) ? :context : :default
+      end
       send(format, expr)
     end
 
@@ -43,8 +46,20 @@ module Campa
       )
     end
 
+    def context(expr)
+      context_bindings(expr).join("\n")
+    end
+
     def default(expr)
       expr
+    end
+
+    def context_bindings(expr, sep: "")
+      own = expr.bindings
+                .map { |tuple| "#{sep}#{call(tuple[0])}: #{call(tuple[1])}" }
+      return own if expr.fallback.nil?
+
+      own + context_bindings(expr.fallback, sep: "#{sep}  ")
     end
   end
 end

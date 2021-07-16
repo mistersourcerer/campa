@@ -1,5 +1,7 @@
 module Campa
   class Context
+    attr_accessor :fallback
+
     def initialize(env = {})
       @env = env
     end
@@ -29,9 +31,9 @@ module Campa
       Context.new(new_env).tap { |c| c.fallback = self }
     end
 
-    protected
-
-    attr_accessor :fallback
+    def bindings
+      @bindings ||= env.is_a?(Context) ? env.bindings : env.to_a
+    end
 
     private
 
