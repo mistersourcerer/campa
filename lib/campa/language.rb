@@ -9,6 +9,8 @@ module Campa
     private
 
     FUNS = {
+      "tests-run": Core::Test.new,
+      "tests-report": Core::TestReport.new,
 
       "print": Core::Print.new,
       "println": Core::PrintLn.new,
@@ -16,6 +18,7 @@ module Campa
 
     FILES = [
       "../campa/core.cmp",
+      "../campa/test.cmp",
     ].freeze
 
     def load_core_funs

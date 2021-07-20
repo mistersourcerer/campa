@@ -1,0 +1,2 @@
+(defun assert (x y)
+  (eq x y))

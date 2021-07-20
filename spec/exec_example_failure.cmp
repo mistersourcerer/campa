@@ -1,0 +1,4 @@
+(defun just-printing (x) (print x))
+(just-printing 'hello)
+(defun test-passed () true)
+(defun test-failed () false)
