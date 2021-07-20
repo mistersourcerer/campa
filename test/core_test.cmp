@@ -1,0 +1,46 @@
+(defun test-eval-atom ()
+  (assert
+    (eval. 'x '((x a) (y b)))
+    'a))
+
+(defun test-eval-invoking-no-param ()
+  (assert
+    (eval. '(eq 'a 'a) '())
+    true))
+
+(defun test-eval-invoking-with-param ()
+  (assert
+    (eval.
+      '(cons x '(b c))
+      '((x a) (y b)))
+    '(a b c)))
+
+(defun test-eval-calling-evcon ()
+  (assert
+    (eval. '(cond ((atom x) 'atom)
+                  (true 'list))
+           '((x '(a b))))
+    'list))
+
+(defun test-eval-lambda ()
+  (assert
+    (eval. '(f '(b c))
+           '((f (lambda (x) (cons 'a x)))))
+    '(a b c)))
+
+(defun test-eval-fun-with-lambda-param ()
+  (assert
+    (eval. '((label firstatom (lambda (x)
+                                (cond ((atom x) x)
+                                      (true (firstatom (car x))))))
+             y)
+           '((y ((a b) (c d)))))
+    'a))
+
+(defun test-eval-calling-evlis ()
+  (assert
+    (eval. '((lambda (x y) (cons x (cdr y)))
+             'a
+             '(b c d))
+           '())
+    '(a c d)))
