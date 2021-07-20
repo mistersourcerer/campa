@@ -6,7 +6,29 @@ Bundler.require :default
 # rubocop:disable Lint/SuppressedException
 begin
   require "simplecov"
-  SimpleCov.start
+
+  # https://github.com/simplecov-ruby/simplecov#running-simplecov-against-subprocesses
+  SimpleCov.enable_for_subprocesses true
+  SimpleCov.at_fork do |pid|
+    # This needs a unique name so it won't be ovewritten
+    SimpleCov.command_name "#{SimpleCov.command_name} (subprocess: #{pid})"
+    # be quiet, the parent process will be in charge of output and checking coverage totals
+    SimpleCov.print_error_status = false
+    SimpleCov.formatter SimpleCov::Formatter::SimpleFormatter
+    SimpleCov.minimum_coverage 0
+    # start
+    SimpleCov.start
+  end
+
+  SimpleCov.start do
+    # After enabling simplecov for subprocesses
+    # it seems like the results were "accumulating" somehow.
+    # This is a very Hacky solution.
+    # TODO: find why this is happening and if possible fix it.
+    FileUtils.rm_rf Campa.root.join("../coverage").to_s
+
+    add_filter %r{^/spec/}
+  end
 rescue LoadError
 end
 # rubocop:enable Lint/SuppressedException

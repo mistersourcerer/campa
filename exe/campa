@@ -2,6 +2,6 @@
 
 require "campa"
 
-Campa::Repl
-  .new(Campa::Evaler.new, Campa::Language.new)
-  .run($stdin, $stdout)
+Campa::Cli
+  .new
+  .execute(ARGV)
