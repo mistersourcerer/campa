@@ -1,6 +1,7 @@
 RSpec.describe Campa::Lisp::Cond do
   let(:lisp) { Campa::Lisp::Core.new }
   let(:evaler) { Campa::Evaler.new }
+  let(:reader_class) { Campa::Reader }
 
   # rubocop: disable RSpec/ExampleLength
   describe "(cond ...)" do
@@ -64,6 +65,16 @@ RSpec.describe Campa::Lisp::Cond do
       ivk = invoke("cond", *conditions)
 
       expect(evaler.call(ivk, lisp)).to eq symbol("y")
+    end
+
+    context "when there are many instructions in a truethy condition" do
+      it "execut all instructions in the 'truethy' body" do
+        instruction =
+          "(cond ((eq 1 2) 'no) (true (label x 1) (label y 2) (label z 3) y))"
+        result = evaler.eval(reader_class.new(instruction), lisp)
+
+        expect(result).to eq 2
+      end
     end
   end
   # rubocop: enable RSpec/ExampleLength

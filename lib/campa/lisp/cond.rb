@@ -40,8 +40,10 @@ module Campa
         #   (true 'yes)
         # )
         # => 'yes
-        to_eval = found.tail == List::EMPTY ? found.head : found.tail.head
-        evaler.call(to_eval, env)
+        to_eval = found.tail == List::EMPTY ? [found.head] : found.tail.to_a
+        to_eval.reduce(nil) do |_, expr|
+          evaler.call(expr, env)
+        end
       end
     end
   end
