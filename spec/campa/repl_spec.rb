@@ -56,12 +56,20 @@ RSpec.describe Campa::Repl do
         expect(output.string).to eq "=> see you soon\n"
       end
 
-      it "handles standard error exceptions with polite good bye message" do
-        allow(broken_reader).to receive(:next).and_raise(StandardError)
+      # rubocop: disable RSpec/ExampleLength
+      it "handles standard error exceptions without closing the repl" do
+        first = true
+        allow(broken_reader).to receive(:next) do
+          if first
+            first = false
+            raise "nope"
+          end
+        end
         repl.run(input, output)
 
-        expect(output.string.split("\n")[-1]).to eq "see you soon"
+        expect(output.string.split("\n")[-1]).to eq "=> "
       end
+      # rubocop: enable RSpec/ExampleLength
     end
     # rubocop: enable RSpec/MultipleMemoizedHelpers
   end

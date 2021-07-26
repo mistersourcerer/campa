@@ -62,7 +62,6 @@ module Campa
       output.puts "Runtime Error: #{exception.class}"
       output.puts "  message: #{exception.message}"
       output.puts back_trace_to_s(exception)
-      raise Interrupt
     end
 
     def back_trace_to_s(exception)
