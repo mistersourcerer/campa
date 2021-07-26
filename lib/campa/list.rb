@@ -19,11 +19,13 @@ module Campa
     end
 
     def head
+      return nil if self == EMPTY
+
       first.value
     end
 
     def tail
-      return EMPTY if first.next_node.nil?
+      return EMPTY if first.nil? || first.next_node.nil?
 
       self.class.new.tap { |l| l.first = @first.next_node }
     end

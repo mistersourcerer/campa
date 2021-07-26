@@ -8,6 +8,7 @@ module Campa
       FalseClass => :boolean,
       Lambda => :lambda,
       Context => :context,
+      NilClass => :null,
     }.freeze
 
     def call(expr)
@@ -48,6 +49,10 @@ module Campa
 
     def context(expr)
       context_bindings(expr).join("\n")
+    end
+
+    def null(_expr)
+      "NIL"
     end
 
     def default(expr)

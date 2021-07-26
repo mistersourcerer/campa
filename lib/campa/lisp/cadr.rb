@@ -12,14 +12,12 @@ module Campa
       end
 
       def call(operation, list)
+        return nil if list.nil? || list == List::EMPTY
         raise illegal_argument(list) if !list.is_a?(List)
 
         operation.label[1..-2].reverse.split("").reduce(list) do |l, oper|
-          if oper == "a"
-            @car.call(l)
-          else
-            @cdr.call(l)
-          end
+          to_call = oper == "a" ? @car : @cdr
+          to_call.call(l)
         end
       end
 

@@ -6,6 +6,7 @@ module Campa
       end
 
       def call(list)
+        return nil if list.nil? || list == List::EMPTY
         raise illegal_argument(list) if !list.is_a?(List)
 
         list.tail

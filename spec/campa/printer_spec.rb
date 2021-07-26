@@ -49,4 +49,10 @@ RSpec.describe Campa::Printer do
     end
     # rubocop: enable RSpec/ExampleLength
   end
+
+  context "when outputing nil" do
+    it "returns the NIL 'string'" do
+      expect(printer.call(nil)).to eq "NIL"
+    end
+  end
 end

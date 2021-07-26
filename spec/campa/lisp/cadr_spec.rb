@@ -31,6 +31,18 @@ RSpec.describe Campa::Lisp::Cadr do
     end
     # rubocop: enable RSpec/ExampleLength
 
+    it "returns nil if argument is an empty list" do
+      ivk = invoke("caaar", invoke("quote", list))
+
+      expect(evaler.call(ivk, lisp)).to eq nil
+    end
+
+    it "returns nil if argument is nil" do
+      ivk = invoke("caaar", nil)
+
+      expect(evaler.call(ivk, lisp)).to eq nil
+    end
+
     it "raises if argument is not a list" do
       expect { evaler.call(invoke("caaar", "1"), lisp) }.to raise_error(
         Campa::Error::IllegalArgument,
