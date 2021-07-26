@@ -135,6 +135,13 @@ RSpec.describe Campa::Reader do
           ]
       end
       # rubocop: enable RSpec/ExampleLength
+
+      it "ensures the input is all consumed when reading quotes" do
+        reader = new_reader("'q")
+
+        expect([reader.next, reader.next])
+          .to eq [list(symbol("quote"), symbol("q")), nil]
+      end
     end
 
     context "when handling new lines" do

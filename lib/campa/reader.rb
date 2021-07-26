@@ -11,9 +11,13 @@ module Campa
 
     def next
       eat_separators
-      return if @input.eof? && @current_char.nil?
+      return read if !@input.eof?
+      return if @current_char.nil?
 
-      read
+      # Exhaust the reader if @input.eof? and !@current_char.nil?
+      next_token = read
+      @current_char = nil
+      next_token
     end
 
     private
@@ -126,6 +130,7 @@ module Campa
       next_char
 
       expression = self.next
+
       List.new(SYM_QUOTE, expression)
     end
 
