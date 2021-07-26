@@ -20,4 +20,4 @@ rescue SystemExit => e
   exit(1) if e.status != 0
 end
 
-task default: %i[spec campatest rubocop]
+task default: %i[spec rubocop campatest]
