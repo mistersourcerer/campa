@@ -19,7 +19,8 @@
                (pair. (cdr x) (cdr y))))))
 
 (defun assoc. (x y)
-  (cond ((eq (caar y) x) (cadar y))
+  (cond ((eq y '()) '())
+        ((eq (caar y) x) (cadar y))
         (true (assoc. x (cdr y)))))
 
 (defun evcon. (c a)

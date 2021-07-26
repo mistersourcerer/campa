@@ -1,3 +1,18 @@
+(defun test-pair ()
+  (assert
+    (pair. '(x y z) '(a b c))
+    '((x a) (y b) (z c))))
+
+(defun test-assoc-with-1 ()
+  (assert
+    (assoc. 'x '((x a) (y b)))
+    'a))
+
+(defun test-assoc-with-2 ()
+  (assert
+    (assoc. 'x '((x new) (x a) (y b)))
+    'new))
+
 (defun test-eval-atom ()
   (assert
     (eval. 'x '((x a) (y b)))
