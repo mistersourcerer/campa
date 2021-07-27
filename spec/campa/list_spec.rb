@@ -65,4 +65,22 @@ RSpec.describe Campa::List do
         .to eq "(hey 1 2 3)"
     end
   end
+
+  describe "#==" do
+    let(:a_list) do
+      described_class.new(
+        1, "two", Campa::Symbol.new("3"),
+        described_class.new(4, :five, 4.20)
+      )
+    end
+
+    it "does a 'deep' compare of lists" do
+      another = described_class.new(
+        1, "two", Campa::Symbol.new("3"),
+        described_class.new(4, :five, 4.20)
+      )
+
+      expect(a_list).to eq another
+    end
+  end
 end

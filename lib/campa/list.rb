@@ -44,7 +44,11 @@ module Campa
       other_node = other.first
 
       loop do
-        return node.nil? && other_node.nil? if node.nil? || other_node.nil?
+        # If both node and other_node are nil
+        # we managed to walk the whole list.
+        # Since there was no early return (with false)
+        # this means all nodes are equal.
+        return node.nil? if other_node.nil?
         return false if node != other_node
 
         node = node.next_node

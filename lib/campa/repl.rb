@@ -39,29 +39,29 @@ module Campa
     def show(output, result)
       output
         .puts(
-          format(
+          printer.call(
             result
           )
         )
     end
 
-    def format(result)
-      printer.call(result)
-    end
-
     def handle_exec_error(output, exception)
-      output.puts "Execution Error: #{exception.class}"
-      output.puts "  message: #{exception.message}"
-      output.puts "  >> Runtime details:"
-      output.puts back_trace_to_s(exception)
+      [
+        "Execution Error: #{exception.class}",
+        "  message: #{exception.message}",
+        "  >> Runtime details:",
+        back_trace_to_s(exception),
+      ].each { |str| output.puts str }
     end
 
     def handle_standard_error(output, exception)
-      output.puts "FATAL!"
-      output.puts "Exeception error was raised at Runtime level"
-      output.puts "Runtime Error: #{exception.class}"
-      output.puts "  message: #{exception.message}"
-      output.puts back_trace_to_s(exception)
+      [
+        "FATAL!",
+        "Exeception error was raised at Runtime level",
+        "Runtime Error: #{exception.class}",
+        "  message: #{exception.message}",
+        back_trace_to_s(exception),
+      ].each { |str| output.puts str }
     end
 
     def back_trace_to_s(exception)

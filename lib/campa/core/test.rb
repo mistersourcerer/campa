@@ -23,13 +23,13 @@ module Campa
         { success: [], failures: [] }.tap do |summary|
           env
             .bindings
-            .select { |(sym, object)| test_fun?(sym, object) }
+            .select { |(sym, object)| test_func?(sym, object) }
             .select { |(sym, _)| included?(tests, sym) }
             .each { |(sym, fn)| add_to_summary(summary, sym, fn, env) }
         end
       end
 
-      def test_fun?(sym, object)
+      def test_func?(sym, object)
         TEST_REGEXP.match?(sym.label) && object.respond_to?(:call)
       end
 
@@ -37,13 +37,13 @@ module Campa
         tests.empty? || tests.include?(TEST_REGEXP.match(sym.label)[2])
       end
 
-      def add_to_summary(summary, sym, fun, env)
-        type = safely_execute(fun, env) ? :success : :failures
+      def add_to_summary(summary, sym, func, env)
+        type = safely_execute(func, env) ? :success : :failures
         summary[type] << sym
       end
 
-      def safely_execute(fun, env)
-        fun.call(env: env)
+      def safely_execute(func, env)
+        func.call(env: env)
       rescue StandardError
         false
       end

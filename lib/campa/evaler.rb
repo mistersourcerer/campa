@@ -18,9 +18,11 @@ module Campa
     end
 
     def eval(reader, env = {})
+      context = self.context(env)
+
       result = nil
       while (token = reader.next)
-        result = call(token, env)
+        result = call(token, context)
       end
       result
     end
@@ -46,9 +48,11 @@ module Campa
 
       fn = extract_fun(invocation, context)
       args = args_for_fun(fn, invocation.tail.to_a, context)
-      return fn.call(*args, env: context) if with_env?(fn)
-
-      fn.call(*args)
+      if with_env?(fn)
+        fn.call(*args, env: context)
+      else
+        fn.call(*args)
+      end
     end
 
     def cr?(invocation)

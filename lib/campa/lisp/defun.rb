@@ -13,12 +13,14 @@ module Campa
       def call(label, params, *body, env:)
         raise label_error(label) if !label.is_a?(Symbol)
 
-        label_fn.call(label, invoke_lambda(params, body), env: env)
+        label_fn.call(
+          label,
+          invoke_lambda(params, body),
+          env: env
+        )
       end
 
       private
-
-      SYM = Symbol.new("lambda")
 
       attr_reader :printer, :label_fn
 
@@ -27,7 +29,7 @@ module Campa
       end
 
       def invoke_lambda(params, body)
-        List.new(SYM, params, *body)
+        List.new(SYMBOL_LAMBDA, params, *body)
       end
     end
   end

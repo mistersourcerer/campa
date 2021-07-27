@@ -15,22 +15,20 @@ module Campa
       return if @current_char.nil?
 
       # Exhaust the reader if @input.eof? and !@current_char.nil?
-      next_token = read
-      @current_char = nil
-      next_token
+      read.tap { @current_char = nil }
     end
 
     private
 
     SEPARATORS = ["\s", ","].freeze
     BOOLS = %w[true false].freeze
+    BOOLS_START = %w[t f].freeze
     CAST_INT = ->(str) { Integer(str) }
     CAST_FLOAT = ->(str) { Float(str) }
-    SYM_QUOTE = Symbol.new("quote")
 
     def to_io_like(input)
       return input if input.respond_to?(:getc) && input.respond_to?(:eof?)
-      return File.new(input) if File.exist?(input)
+      return File.new(input) if File.file?(input)
 
       # TODO: check if it is "castable" first,
       StringIO.new(input)
@@ -63,8 +61,7 @@ module Campa
     end
 
     # rubocop: disable Metrics/MethodLength, Metrics/PerceivedComplexity
-    # rubocop: disable Style/EmptyCaseCondition
-    # rubocop: disable Metrics/CyclomaticComplexity
+    # rubocop: disable Style/EmptyCaseCondition, Metrics/CyclomaticComplexity
     def read
       case
       when @current_char == "\""
@@ -82,8 +79,7 @@ module Campa
       end
     end
     # rubocop: enable Metrics/MethodLength, Metrics/PerceivedComplexity
-    # rubocop: enable Style/EmptyCaseCondition
-    # rubocop: enable Metrics/CyclomaticComplexity
+    # rubocop: enable Style/EmptyCaseCondition, Metrics/CyclomaticComplexity
 
     def read_string
       return if @input.eof?
@@ -109,10 +105,10 @@ module Campa
       cast = CAST_INT
 
       until @input.eof?
-        cast = CAST_FLOAT if @current_char == "."
         next_char
         break if separator? || delimiter?
 
+        cast = CAST_FLOAT if @current_char == "."
         number << @current_char
       end
 
@@ -129,9 +125,7 @@ module Campa
       # eats the ' char
       next_char
 
-      expression = self.next
-
-      List.new(SYM_QUOTE, expression)
+      List.new(SYMBOL_QUOTE, self.next)
     end
 
     def read_list
@@ -139,12 +133,12 @@ module Campa
       next_char
 
       elements = []
-      while !@input.eof? && @current_char != ")"
+      while !@input.eof? && !delimiter?
         token = self.next
         elements << token
         eat_separators if separator?
       end
-      raise Error::MissingDelimiter, ")" if @current_char != ")"
+      raise Error::MissingDelimiter, ")" if !delimiter?
 
       # eats the closing )
       next_char
@@ -194,7 +188,7 @@ module Campa
     end
 
     def boolean?
-      return false if @current_char != "t" && @current_char != "f"
+      return false if !BOOLS_START.include?(@current_char)
 
       @current_token = @current_char
       @current_token << next_char until @input.eof? || peek == " " || peek == ")"

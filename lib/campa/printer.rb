@@ -20,8 +20,6 @@ module Campa
 
     private
 
-    SYM_LAMBDA = Symbol.new("lambda")
-
     def string(expr)
       "\"#{expr}\""
     end
@@ -43,7 +41,7 @@ module Campa
         List
           .new(expr.body.map { |e| call(e) })
           .push(expr.params)
-          .push(SYM_LAMBDA)
+          .push(SYMBOL_LAMBDA)
       )
     end
 
@@ -60,8 +58,10 @@ module Campa
     end
 
     def context_bindings(expr, sep: "")
-      own = expr.bindings
-                .map { |tuple| "#{sep}#{call(tuple[0])}: #{call(tuple[1])}" }
+      own =
+        expr
+        .bindings
+        .map { |tuple| "#{sep}#{call(tuple[0])}: #{call(tuple[1])}" }
       return own if expr.fallback.nil?
 
       own + context_bindings(expr.fallback, sep: "#{sep}  ")

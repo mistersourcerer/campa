@@ -24,7 +24,7 @@ module Campa
     attr_reader :repl, :evaler, :context, :reader
 
     def new_eval_ctx(out)
-      context.push(Symbol.new("__out__") => out)
+      context.push(SYMBOL_OUT => out)
     end
 
     def evaluate(file, _, out)
@@ -42,8 +42,9 @@ module Campa
       files.each { |file| evaler.eval(reader.new(file), eval_ctx) }
       results = Campa::Core::Test.new.call(env: eval_ctx)
       reporter = Campa::Core::TestReport.new
-      exit(0) if reporter.call(results, env: eval_ctx)
-      exit(1)
+      code = reporter.call(results, env: eval_ctx) ? 0 : 1
+
+      exit(code)
     end
 
     def default_repl

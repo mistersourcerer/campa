@@ -2,17 +2,22 @@ module Campa
   module Core
     class TestReport
       def call(result, env:)
-        success = filter(:success, result)
-        failures = filter(:failures, result)
-        tests_ran = success.length + failures.length
-        out = env[Symbol.new("__out__")] || $stdout
-        out.puts "\n\n#{tests_ran} tests ran"
-        return success_summary(success, out) if failures.empty?
-
-        failure_summary(failures, out)
+        success, failures = %i[success failures].map { |t| filter(t, result) }
+        out = env[SYMBOL_OUT] || $stdout
+        show_summary(success, failures, out)
       end
 
       private
+
+      def show_summary(success, failures, out)
+        out.puts "\n\n#{success.length + failures.length} tests ran"
+
+        if failures.empty?
+          success_summary(success, out)
+        else
+          failure_summary(failures, out)
+        end
+      end
 
       def filter(type, result)
         filtered =
@@ -39,9 +44,12 @@ module Campa
       end
 
       def failure_summary(failures, out)
-        out.puts "FAIL!"
-        out.puts "  #{failures.length} tests failed"
-        out.puts "  they are:"
+        [
+          "FAIL!",
+          "  #{failures.length} tests failed",
+          "  they are:",
+        ].each { |str| out.puts str }
+
         failures.each { |t| out.puts "    - #{t}" }
 
         false
