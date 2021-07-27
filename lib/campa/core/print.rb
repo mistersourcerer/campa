@@ -4,7 +4,7 @@ module Campa
       def call(*stuff, env:)
         string =
           stuff
-          .map { |s| printer.call(s) }
+          .map { |s| s.is_a?(String) ? s : printer.call(s) }
           .join(" ")
         (env[SYMBOL_OUT] || $stdout).print(string)
         nil

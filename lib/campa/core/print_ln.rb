@@ -3,7 +3,7 @@ module Campa
     class PrintLn
       def call(*stuff, env:)
         out = env[SYMBOL_OUT] || $stdout
-        stuff.each { |s| out.puts printer.call(s) }
+        stuff.each { |s| out.puts(s.is_a?(String) ? s : printer.call(s)) }
         nil
       end
 

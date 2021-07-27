@@ -11,13 +11,13 @@ RSpec.describe Campa::Core::Print do
     it "prints the parameter to the output" do
       evaler.call(invoke("print", "bbq!"), ctx)
 
-      expect(output.string).to eq "\"bbq!\""
+      expect(output.string).to eq "bbq!"
     end
 
     it "joins the parameters with a space and print it out" do
       evaler.call(invoke("print", "omg", "lol", 420), ctx)
 
-      expect(output.string).to eq "\"omg\" \"lol\" 420"
+      expect(output.string).to eq "omg lol 420"
     end
 
     it "returns nil" do
