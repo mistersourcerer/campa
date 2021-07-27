@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 3.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/mistersourcerer/campa."
+  spec.metadata["source_code_uri"] = "https://github.com/mistersourcerer/campa"
   spec.metadata["changelog_uri"] = "https://github.com/mistersourcerer/campa/blob/main/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
@@ -28,7 +28,4 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "zeitwerk", "~> 2.4"
-
-  # For more information and examples about making a new gem, checkout our
-  # guide at: https://bundler.io/guides/creating_gem.html
 end
