@@ -8,7 +8,8 @@ module Campa
       def call(*paths, env:)
         verify_presence(paths)
         paths.reduce(nil) do |_, file|
-          evaler.eval(Reader.new(file), env)
+          reader = Reader.new(File.expand_path(file))
+          evaler.eval(reader, env)
         end
       end
 
@@ -17,7 +18,7 @@ module Campa
       attr_reader :evaler
 
       def verify_presence(paths)
-        not_here = paths.find { |f| !File.exist?(f) }
+        not_here = paths.find { |f| !File.file?(File.expand_path(f)) }
         raise Error::NotFound, not_here if !not_here.nil?
       end
     end
