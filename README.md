@@ -56,7 +56,7 @@ more accessible.
 This project implements **LISP** to the point
 where all the functions exemplified by Graham's article
 run successfully. Which means one could implement *Campa* on itself
-(or they could just [go here](../blob/main/campa/core.cmp)
+(or they could just [go here](../main/campa/core.cmp)
 and see how it is done already).
 
 ## Usage
@@ -144,7 +144,7 @@ to quote an object is also implemented in the runtime.
 ### Implementation details
 
 All those functions are implemented in Ruby
-[and they live right here](../blob/4fc244d41dd6d9/lib/campa/lisp).
+[and they live right here](../3b43a21/lib/campa/lisp).
 
 ## Beyond the Roots
 
@@ -158,16 +158,16 @@ and the ones implemented on the runtime (in Ruby).
 
 ### Extras in Campa
 
-  - [(assert x y)](../blob/4fc244d41dd6d9/campa/test.cmp#L1)
+  - [(assert x y)](../3b43a21/campa/test.cmp#L1)
     Returns true if x and y are *eq*.
 
 ### Extras in Ruby (runtime)
 
-  - [(load a-file another-file)](../blob/4fc244d41dd6d9/lib/campa/core/load.rb)
+  - [(load a-file another-file)](../3b43a21/lib/campa/core/load.rb)
     Read and evaluate the files given as arguments
-  - [(print "some" "stuff" 4 '("even" "lists"))](../blob/4fc244d41dd6d9/lib/campa/core/print.rb)
+  - [(print "some" "stuff" 4 '("even" "lists"))](../3b43a21/lib/campa/core/print.rb)
     Print out a reader friendly representation of the given parameter(s).
-  - [(println stuffz here)](../blob/4fc244d41dd6d9/lib/campa/core/println.rb)
+  - [(println stuffz here)](../3b43a21/lib/campa/core/println.rb)
     Same as print but add a line break (`\n`) after each parameter.
 
 #### Tests
@@ -184,7 +184,7 @@ that starts with *test-* or *test_* (case insentive)
 and return *true* for success
 or *false* for failure.
 The core implementation for *Campa* rely on this tool
-and you can check out [some test examples here](../blob/4fc244d41dd6d9/test/core_test.cmp).
+and you can check out [some test examples here](../3b43a21/test/core_test.cmp).
 
     $ campa test test/core_test.cmp
 
@@ -194,8 +194,8 @@ and you can check out [some test examples here](../blob/4fc244d41dd6d9/test/core
 Internally this "framework" is comprised
 of the two following functions:
 
-  - [(tests-run optional-name other-optional-name)](../blob/4fc244d41dd6d9/lib/campa/core/test.rb)
-  - [(tests-report (tests-run))](../blob/4fc244d41dd6d9/lib/campa/core/test_report.rb)
+  - [(tests-run optional-name other-optional-name)](../3b43a21/lib/campa/core/test.rb)
+  - [(tests-report (tests-run))](../3b43a21/lib/campa/core/test_report.rb)
 
 ##### (tests-run)
 
@@ -237,7 +237,7 @@ This is an easy way to integrate this tool
 with CI environments or any type of "progressive" build.
 
 An example of how this is used by
-*Campa* implementation [can be found here](../blob/4fc244d41dd6d9/Rakefile#L12).
+*Campa* implementation [can be found here](../3b43a21/Rakefile#L12).
 
 
 ## Development
