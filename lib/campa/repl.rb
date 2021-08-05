@@ -1,5 +1,12 @@
 module Campa
   class Repl
+    # It creates a new {Context} that uses one
+    # given as a parameter to this contructor to evaluate
+    # expressions typed in the <b>REPL</b>.
+    #
+    # @param evaler [Evaler] used to extract value from expressions
+    # @param context [Context] against which expressions will be evaled
+    # @param reader [Reader] to return expressions to be evaled
     def initialize(evaler, context, reader: Reader)
       @reader = reader
       @evaler = evaler
@@ -8,6 +15,17 @@ module Campa
       @printer = Printer.new
     end
 
+    # Uses the <i>#getc</i> method from the parameter <i>input</i>
+    # to create a (probably blocking) loop to evaluate code "live"
+    # creating a <b>REPL</b> session.
+    #
+    # Captures the Interrupt exception to break the loop
+    # and finish the current <b>REPL</b> session.
+    #
+    # @param input [IO] an IO like object from where tokens will be extracted
+    # @param output [IO] IO like object to receive the output
+    #   from evaluating the forms
+    #
     # rubocop: disable Metrics/MethodLength
     def run(input, output)
       output.print "=> "

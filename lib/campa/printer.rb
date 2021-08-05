@@ -1,5 +1,32 @@
 module Campa
+  # Represents a <i>Campa</i> expression
+  # in a human readable form.
+  #
+  # In general it tries to create a representation
+  # that is valid <i>Campa</i> code
+  # to make it easy(ier) to copy and paste stuff
+  # from the REPL to a file.
+  #
+  # @example some results produced by {Printer}
+  #   printer = Printer.new
+  #
+  #   printer.call("lol") #=> "lol"
+  #   printer.call("lol") #=> 123
+  #   printer.call(List.new("bbq", 420, List.new("yes"))) #=> ("bbq" 420 ("yes"))
   class Printer
+    # @param expr [Object] <i>Campa</i> expression to be respresented in
+    #   human readable form
+    # @return [String] human readable form (almost always valid code)
+    #   of an Expression
+    def call(expr)
+      format = FORMATS.fetch(expr.class) do
+        expr.is_a?(Context) ? :context : :default
+      end
+      send(format, expr)
+    end
+
+    private
+
     FORMATS = {
       String => :string,
       Symbol => :symbol,
@@ -10,15 +37,6 @@ module Campa
       Context => :context,
       NilClass => :null,
     }.freeze
-
-    def call(expr)
-      format = FORMATS.fetch(expr.class) do
-        expr.is_a?(Context) ? :context : :default
-      end
-      send(format, expr)
-    end
-
-    private
 
     def string(expr)
       "\"#{expr}\""

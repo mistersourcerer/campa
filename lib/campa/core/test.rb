@@ -1,12 +1,40 @@
 module Campa
   module Core
+    # Searches functions with prefix test_ or test- (case insenstive)
+    # in a given context, invoke those and
+    # store their results in a Data Structure with the given form:
+    #
+    #   (
+    #     (success, (test-one, test-two)),
+    #     (failures, (test-three, test-four))
+    #   )
+    #
+    # In this example we are considering that
+    # functions <i>test-one</i> and <i>test-two</i> returned <b>true</b> and
+    # functions <i>test-three</i> and <i>test-four</i> returned <b>false</b>.
     class Test
-      TEST_REGEXP = /\Atest(_|-)(.+)$/i
-
       def initialize
         @evaler = Campa::Evaler.new
       end
 
+      # Execute functions named test-* or test_* (case insentive)
+      # and collect the results.
+      #
+      # The param <i>tests</i> can be used to filter
+      # specific tests to be executed.
+      # For a context where functions
+      # test-great-one, test-great-two and test-awful exists,
+      # if we want to execute only the <i>great</i> ones, we could do:
+      #
+      # @example
+      #   test = Test.new
+      #   test.call("great", env: ctx)
+      #
+      # @param tests [Array<String>] if given will be used to "filter"
+      #   functions by name
+      # @param env [Context] will be used to search functions
+      #   named test-* or test_* (case insentive) and also
+      #   to execute those functions
       def call(*tests, env:)
         summary = execute_all(tests, env)
         List.new(
@@ -16,6 +44,8 @@ module Campa
       end
 
       private
+
+      TEST_REGEXP = /\Atest(_|-)(.+)$/i
 
       attr_reader :evaler
 

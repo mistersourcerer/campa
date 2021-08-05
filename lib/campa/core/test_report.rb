@@ -1,6 +1,16 @@
 module Campa
   module Core
+    # Uses the result of a {Test#call} execution
+    # to show a human readable summary of a test execution.
     class TestReport
+      # Receives the result of {Test#call}
+      # and shows a (hopefully) useful test summary.
+      #
+      # @param result [List] result of calling {Test#call}
+      # @param env [Context] where object bound to {SYMBOL_OUT} will be searched
+      #   as an alternative to $stdout
+      # @return [Boolean] <b>true</b> if all tests were successful
+      #   (<b>false</b> otherwhise).
       def call(result, env:)
         success, failures = %i[success failures].map { |t| filter(t, result) }
         out = env[SYMBOL_OUT] || $stdout

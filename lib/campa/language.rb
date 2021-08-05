@@ -1,4 +1,12 @@
 module Campa
+  # {Context} wrapping the core bindings
+  # that form the core for <b>Campa</b> (language).
+  #
+  # It extends {Lisp::Core} to add
+  #   - (test-run ...)
+  #   - (tests-report)
+  #   - (print ...)
+  #   - (println ...)
   class Language < Lisp::Core
     def initialize
       super

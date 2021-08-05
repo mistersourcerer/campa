@@ -13,3 +13,5 @@ gem "rubocop-rspec", require: false
 
 gem "pry-byebug"
 gem "simplecov", require: false
+
+gem "yard"

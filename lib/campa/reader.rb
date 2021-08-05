@@ -1,14 +1,28 @@
 require "stringio"
 
 module Campa
+  # Reads strings or files into <i>Campa</i> expressions.
   # rubocop: disable Metrics/ClassLength
   class Reader
     # rubocop: enable Metrics/ClassLength
+
+    # Given a String, a file pointer or any <i>#getc</i>, <i>#eof?</i>
+    # it allows fetch every valid <i>Campa</i> form from it.
+    #
+    # If the String is a valid file path
+    # it will be converted into a file pointer.
+    # Anything else will be converted into a StringIO
+    #
+    # @param input [String, (#getc, #eof?)]
     def initialize(input)
       @input = to_io_like(input)
       next_char
     end
 
+    # Return the next <i>Campa</i> form available
+    # in the underlying io like object.
+    #
+    # @return [Object] next available <i>Campa</i> form
     def next
       eat_separators
       return read if !@input.eof?

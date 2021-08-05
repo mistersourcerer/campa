@@ -1,9 +1,24 @@
 module Campa
+  # All the actual logic on how to evaluate
+  # the differente known forms
+  # in implemented in here.
   class Evaler
     def initialize
       @printer = Printer.new
     end
 
+    # Returns the result of a given form evaluation.
+    #
+    # The parameter expression is evaluated
+    # based on it's type.
+    # Primitives (like booleans, nil, strings...) are returned as is.
+    # {Symbol}s and {List}s are handled like this:
+    # - {Symbol}'s are searched in the given {Context} (env parameter).
+    # - {List}'s are considered function invocations.
+    #
+    # @param expression Can be any known form.
+    # @param env [#[], #[]=] Hash or {Context} containing the bindings
+    #   for the current <i>Campa</i> execution.
     def call(expression, env = {})
       context = self.context(env)
 
@@ -17,6 +32,15 @@ module Campa
       end
     end
 
+    # Receives a {Reader} object
+    # and evaluate all forms returned
+    # by each <i>#next</i> call.
+    # Uses {#call} to do the actual evaluation.
+    #
+    # @param reader [Reader] representing the source code to be evaluated
+    # @param env [Context] to evaluate the code
+    # @return [Object] the result of evaluating the last form
+    #   available in the given {Reader}
     def eval(reader, env = {})
       context = self.context(env)
 
