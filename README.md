@@ -1,8 +1,8 @@
 # Campa
 
-![travis build (shildes.io) badge](https://img.shields.io/travis/com/mistersourcerer/campa?style=plastic "Build Status")
-![coverage (shildes.io) badge](https://img.shields.io/codeclimate/coverage/mistersourcerer/campa?style=plastic "Coverage Status")
-![gem version (shildes.io) badge](https://img.shields.io/gem/v/campa?include_prereleases&style=plastic "Version")
+[![travis build (shildes.io) badge](https://img.shields.io/travis/com/mistersourcerer/campa?style=plastic "Build Status")](https://travis-ci.com/github/mistersourcerer/campa)
+[![coverage (shildes.io) badge](https://img.shields.io/codeclimate/coverage/mistersourcerer/campa?style=plastic "Coverage Status")](https://codeclimate.com/github/mistersourcerer/campa)
+[![gem version (shildes.io) badge](https://img.shields.io/gem/v/campa?include_prereleases&style=plastic "Version")](https://rubygems.org/gems/campa)
 [![yard docs](http://img.shields.io/badge/yard-docs-blue.svg?style=plastic)](http://rubydoc.info/github/mistersourcerer/campa "Docs")
 
 This is a [LISP](https://www.britannica.com/technology/LISP-computer-language) implementation written in Ruby.
