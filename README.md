@@ -160,16 +160,16 @@ and the ones implemented on the runtime (in Ruby).
 ### Extras in Campa
 
   - [(assert x y)](../3b43a21/campa/test.cmp#L1)
-    Returns true if x and y are *eq*.
+    Returns **true** if x and y are *eq*
 
 ### Extras in Ruby (runtime)
 
   - [(load a-file another-file)](../3b43a21/lib/campa/core/load.rb)
     Read and evaluate the files given as arguments
   - [(print "some" "stuff" 4 '("even" "lists"))](../3b43a21/lib/campa/core/print.rb)
-    Print out a reader friendly representation of the given parameter(s).
+    Print out a human friendly representation of the given parameter(s)
   - [(println stuffz here)](../3b43a21/lib/campa/core/println.rb)
-    Same as print but add a line break (`\n`) after each parameter.
+    Same as *print* but add a line break (`\n`) after each parameter
 
 #### Tests
 
@@ -177,7 +177,7 @@ There is a very simplistic test framework
 implemented in the runtime.
 It is available via the *campa* command line
 with the option **test**.
-It receives as argument files containing well...
+It receives as parameters files containing well...
 tests.
 
 The definition of a test in this context is any function
@@ -203,7 +203,7 @@ of the two following functions:
 The *tests-run* function will find
 any function whose name starts with *test-* or *test_* (case insensitive)
 in the current context and run it.
-A function that returns false
+A function that returns *false*
 is considered a failing test.
 
 We can simulate this clearly in the REPL:
@@ -245,7 +245,7 @@ An example of how this is used by
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
