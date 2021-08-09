@@ -7,6 +7,8 @@
 
 This is a [LISP](https://www.britannica.com/technology/LISP-computer-language) implementation written in Ruby.
 
+[A versão PT-BR desse README está aqui.](README-PT_BR.md)
+
 [![XKCD lisp cycles comic strip](https://imgs.xkcd.com/comics/lisp_cycles.png)](https://xkcd.com/297/)
 
 It comes equiped with a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)
