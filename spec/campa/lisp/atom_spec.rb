@@ -6,7 +6,7 @@ RSpec.describe Campa::Lisp::Atom do
     it "returns true for symbols" do
       ivk = invoke("atom", invoke("quote", symbol("a")))
 
-      expect(evaler.call(ivk, lisp)).to eq true
+      expect(evaler.call(ivk, lisp)).to be true
     end
 
     it "returns true for primitives" do
@@ -20,13 +20,13 @@ RSpec.describe Campa::Lisp::Atom do
     it "returns true for empty lists" do
       ivk = invoke("atom", invoke("quote", list))
 
-      expect(evaler.call(ivk, lisp)).to eq true
+      expect(evaler.call(ivk, lisp)).to be true
     end
 
     it "returns false for non-empty lists" do
       ivk = invoke("atom", invoke("quote", list(1, 2)))
 
-      expect(evaler.call(ivk, lisp)).to eq false
+      expect(evaler.call(ivk, lisp)).to be false
     end
   end
 end

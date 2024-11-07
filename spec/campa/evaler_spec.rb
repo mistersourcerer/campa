@@ -13,7 +13,7 @@ RSpec.describe Campa::Evaler do
       end
 
       it "returns nil when receiving it" do
-        expect(evaler.call(nil)).to eq nil
+        expect(evaler.call(nil)).to be_nil
       end
 
       it "returns string when receiving it" do

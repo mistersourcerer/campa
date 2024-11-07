@@ -2,6 +2,6 @@
 
 RSpec.describe Campa do
   it "has a version number" do
-    expect(Campa::VERSION).not_to be nil
+    expect(Campa::VERSION).not_to be_nil
   end
 end

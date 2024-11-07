@@ -41,7 +41,7 @@ RSpec.describe Campa::Lisp::Cond do
       ]
       ivk = invoke("cond", *conditions)
 
-      expect(evaler.call(ivk, lisp)).to eq nil
+      expect(evaler.call(ivk, lisp)).to be_nil
     end
 
     it "returns the value of the truethy expression itself if no 'tail' is given" do

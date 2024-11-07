@@ -22,7 +22,7 @@ RSpec.describe Campa::Core::PrintLn do
 
     it "returns nil" do
       expect(evaler.call(invoke("println", "omg", "lol", "bbq!"), ctx))
-        .to eq nil
+        .to be_nil
     end
   end
 end

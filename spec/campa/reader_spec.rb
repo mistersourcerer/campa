@@ -168,7 +168,7 @@ RSpec.describe Campa::Reader do
           new_reader("(subst (quote m) (quote b) (quote (a b (a b c) d)))")
         reader.next
 
-        expect(reader.next).to eq nil
+        expect(reader.next).to be_nil
       end
     end
   end

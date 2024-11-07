@@ -31,9 +31,7 @@ RSpec.describe Campa::Evaler, "#call" do
     env = { symbol("fun") => ->(*stuffs) { stuffs } }
     invocation = list(symbol("fun"), 420, "there is", "things", :also)
 
-    expect(evaler.call(invocation, env)).to match_array [
-      420, "there is", "things", :also
-    ]
+    expect(evaler.call(invocation, env)).to contain_exactly(420, "there is", "things", :also)
   end
 
   # rubocop: disable RSpec/ExampleLength
@@ -45,7 +43,7 @@ RSpec.describe Campa::Evaler, "#call" do
     }
     invocation = list(symbol("fun"), symbol("num"), symbol("str"))
 
-    expect(evaler.call(invocation, env)).to match_array [420, "stuff"]
+    expect(evaler.call(invocation, env)).to contain_exactly(420, "stuff")
   end
   # rubocop: enable RSpec/ExampleLength
 
@@ -78,8 +76,7 @@ RSpec.describe Campa::Evaler, "#call" do
     expect(evaler.call(list)).to eq list
   end
 
-  xit "ensures the function has it's own context" do
-  end
+  xit "ensures the function has it's own context"
 
   context "when invoking a /c(a|d)+r/ function" do
     let(:cadr) do

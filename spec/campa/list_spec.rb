@@ -14,7 +14,7 @@ RSpec.describe Campa::List do
         list.tail.tail.tail.tail.tail
       ]
 
-      expect(expectations).to match_array [1, 2, 3, 4, 5, empty]
+      expect(expectations).to contain_exactly(1, 2, 3, 4, 5, empty)
     end
     # rubocop:enable RSpec/ExampleLength
   end

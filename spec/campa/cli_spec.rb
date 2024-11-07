@@ -1,7 +1,7 @@
 RSpec.describe Campa::Cli do
   subject(:cli) { described_class.new(repl: repl) }
 
-  let(:repl) { instance_spy("Campa::Repl") }
+  let(:repl) { instance_spy(Campa::Repl) }
   let(:file) { Campa.root.join("../spec/exec_example.cmp").to_s }
   let(:process_out) do
     Class.new do

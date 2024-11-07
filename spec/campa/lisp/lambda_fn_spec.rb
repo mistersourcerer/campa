@@ -44,20 +44,26 @@ RSpec.describe Campa::Lisp::LambdaFn do
 
     # rubocop: disable RSpec/ExampleLength
     it "allows to pass a lambda as argument" do
+      # (lambda (x) (cons 'a x))
       lambda_cons = invoke(
         "lambda",
         list(symbol("x")),
         invoke("cons", invoke("quote", symbol("a")), symbol("x"))
       )
 
+      # (lambda (f) (f '(b c))
       lambda_ivk = invoke(
         "lambda",
         list(symbol("f")),
         invoke("f", invoke("quote", list(symbol("b"), symbol("c"))))
       )
 
+      # ((lambda (f) (f '(b c))) '(lambda (x) (cons 'a x)))
       ivk = list(lambda_ivk, invoke("quote", lambda_cons))
       evaler.call(ivk, lisp)
+
+      expect(evaler.call(ivk, lisp))
+        .to eq list(symbol("a"), symbol("b"), symbol("c"))
     end
     # rubocop: enable RSpec/ExampleLength
   end
@@ -71,7 +77,7 @@ RSpec.describe Campa::Lisp::LambdaFn do
         .new
         .call(root.join("../spec/example.cmp"), env: ctx)
 
-      evaler.call(invoke("is-one?", 1), ctx)
+      expect(evaler.call(invoke("is-one?", 1), ctx)).to be true
     end
   end
 end

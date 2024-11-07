@@ -46,8 +46,8 @@ RSpec.describe Campa::Repl do
     context "when handling exceptions" do
       subject(:repl) { described_class.new(evaler, lisp, reader: reader_class) }
 
-      let(:broken_reader) { instance_double("Reader") }
-      let(:reader_class) { instance_double("Class", new: broken_reader) }
+      let(:broken_reader) { instance_double(Campa::Reader) }
+      let(:reader_class) { instance_double(Class, new: broken_reader) }
 
       it "shows a polite good bye message when Interrupt is raised" do
         allow(broken_reader).to receive(:next).and_raise(Interrupt)

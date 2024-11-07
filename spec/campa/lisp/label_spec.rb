@@ -7,7 +7,7 @@ RSpec.describe Campa::Lisp::Label do
     it "binds a value to the given symbol on a given context" do
       evaler.call(invoke("label", symbol("x"), 4.20), context)
 
-      expect(context[symbol("x")]).to eq 4.20
+      expect(context[symbol("x")]).to be 4.20
     end
 
     it "works with function even without quoting it" do
@@ -15,7 +15,7 @@ RSpec.describe Campa::Lisp::Label do
       ivk = invoke("label", symbol("fun"), fun)
       evaler.call(ivk, context)
 
-      expect(evaler.call(invoke("fun", 4.20), context)).to eq true
+      expect(evaler.call(invoke("fun", 4.20), context)).to be true
     end
 
     context "when ensuring to cover Roots of Lisp XD" do
@@ -77,7 +77,7 @@ RSpec.describe Campa::Lisp::Label do
         ivk = invoke("label", symbol("cxr"), invoke("lambda", list, 4.20))
         evaler.call(ivk, context)
 
-        expect(evaler.call(invoke("cxr"), context)).to eq 4.20
+        expect(evaler.call(invoke("cxr"), context)).to be 4.20
       end
     end
   end

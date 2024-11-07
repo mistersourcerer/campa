@@ -11,7 +11,7 @@ RSpec.describe Campa::Context do
     it "behaves like a hash on #include?" do
       context[symbol("lol")] = 1
 
-      expect(context.include?(symbol("lol"))).to eq true
+      expect(context.include?(symbol("lol"))).to be true
     end
   end
 

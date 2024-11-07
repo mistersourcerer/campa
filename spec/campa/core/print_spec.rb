@@ -22,7 +22,7 @@ RSpec.describe Campa::Core::Print do
 
     it "returns nil" do
       expect(evaler.call(invoke("print", "omg", "lol", "bbq!"), ctx))
-        .to eq nil
+        .to be_nil
     end
 
     it "uses the campa printer to output 'objects'" do

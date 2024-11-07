@@ -34,13 +34,13 @@ RSpec.describe Campa::Lisp::Cadr do
     it "returns nil if argument is an empty list" do
       ivk = invoke("caaar", invoke("quote", list))
 
-      expect(evaler.call(ivk, lisp)).to eq nil
+      expect(evaler.call(ivk, lisp)).to be_nil
     end
 
     it "returns nil if argument is nil" do
       ivk = invoke("caaar", nil)
 
-      expect(evaler.call(ivk, lisp)).to eq nil
+      expect(evaler.call(ivk, lisp)).to be_nil
     end
 
     it "raises if argument is not a list" do

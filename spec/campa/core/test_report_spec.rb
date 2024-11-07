@@ -51,7 +51,7 @@ RSpec.describe Campa::Core::Test do
       end
 
       it "returns true if no tests fail" do
-        expect(result).to eq true
+        expect(result).to be true
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe Campa::Core::Test do
       # rubocop: enable RSpec/ExampleLength
 
       it "returns false if there are any failures" do
-        expect(result).to eq false
+        expect(result).to be false
       end
     end
   end
